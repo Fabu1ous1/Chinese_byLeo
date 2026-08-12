@@ -97,6 +97,31 @@
   .opt.correct { background: #4F6F62; border-color: #4F6F62; color: #E8E1CF; }
   .opt.wrong { background: #A6332B; border-color: #A6332B; color: #E8E1CF; }
   .next-btn { width: 100%; padding: 11px; border-radius: 8px; font-size: 14px; font-weight: 500; background: #E8E1CF; color: #1B1B20; border: none; font-family: 'Inter', sans-serif; }
+
+  .g-list { display: flex; flex-direction: column; gap: 8px; }
+  .g-item {
+    text-align: left; padding: 14px 16px; border-radius: 10px; border: 1px solid #4A4A52;
+    background: transparent; color: #E8E1CF; font-family: 'Inter', sans-serif;
+  }
+  .g-item .g-num { font-family: 'Noto Serif SC', serif; color: #B8933E; font-size: 13px; margin-right: 8px; }
+  .g-item .g-title { font-size: 14px; font-weight: 500; }
+  .g-back { background: none; border: none; color: #B8933E; font-family: 'Inter', sans-serif; font-size: 13px; padding: 0; margin-bottom: 16px; }
+  .g-detail-title { font-size: 20px; margin: 0 0 12px; }
+  .g-explain { font-size: 14px; line-height: 1.6; opacity: 0.9; margin-bottom: 16px; }
+  .g-formula {
+    background: #E8E1CF; color: #1B1B20; padding: 12px 16px; border-radius: 8px;
+    font-family: 'Spectral', serif; font-style: italic; font-size: 15px; margin-bottom: 20px; text-align: center;
+  }
+  .g-ex-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.15em; opacity: 0.6; margin-bottom: 10px; }
+  .g-example { margin-bottom: 14px; padding-bottom: 14px; border-bottom: 1px solid #33333a; }
+  .g-example:last-child { border-bottom: none; }
+  .g-ex-hanzi { font-family: 'Noto Serif SC', serif; font-size: 20px; display: block; margin-bottom: 2px; }
+  .g-ex-pinyin { font-family: 'Spectral', serif; font-style: italic; font-size: 13px; opacity: 0.75; display: block; }
+  .g-ex-ru { font-size: 13px; opacity: 0.6; display: block; margin-top: 2px; }
+  .g-practice {
+    margin-top: 24px; padding-top: 20px; border-top: 1px solid #4A4A52;
+  }
+  .g-practice-q { font-size: 14px; margin-bottom: 12px; font-weight: 500; }
 </style>
 </head>
 <body>
@@ -114,6 +139,7 @@
   <div class="modes">
     <button id="modeLearnBtn" class="active">Учить</button>
     <button id="modeQuizBtn">Тест</button>
+    <button id="modeGrammarBtn">Грамматика</button>
   </div>
 
   <div id="learnView">
@@ -150,6 +176,22 @@
     <p class="quiz-label">Что это значит?</p>
     <div class="options" id="qOptions"></div>
     <button class="next-btn" id="qNextBtn" style="display:none;">Следующий вопрос →</button>
+  </div>
+
+  <div id="grammarView" style="display:none;">
+    <div id="gList" class="g-list"></div>
+    <div id="gDetail" style="display:none;">
+      <button class="g-back" id="gBackBtn">← Все темы</button>
+      <h2 class="g-detail-title display" id="gTitle"></h2>
+      <p class="g-explain" id="gExplain"></p>
+      <div class="g-formula" id="gFormula"></div>
+      <p class="g-ex-label">Примеры</p>
+      <div id="gExamples"></div>
+      <div class="g-practice">
+        <p class="g-practice-q" id="gPracticeQ"></p>
+        <div class="options" id="gPracticeOpts"></div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -264,6 +306,148 @@ const LESSONS = [
     { hanzi: "花", pinyin: "huā", tone: 1, ru: "цветок", ex: "她喜欢花。", exPinyin: "Tā xǐhuan huā.", exRu: "Она любит цветы." },
     { hanzi: "月亮", pinyin: "yuèliang", tone: 4, ru: "луна", ex: "今晚月亮很亮。", exPinyin: "Jīnwǎn yuèliang hěn liàng.", exRu: "Сегодня вечером луна очень яркая." },
   ]},
+];
+
+const GRAMMAR = [
+  { id: 1, title: "是 — глагол-связка «быть»",
+    explain: "是 связывает подлежащее с существительным и отвечает на вопрос «кто/что это». В отличие от русского «есть», 是 не пропускается и не меняется по лицам.",
+    formula: "Подлежащее + 是 + существительное",
+    examples: [
+      { hanzi: "我是学生。", pinyin: "Wǒ shì xuésheng.", ru: "Я студент." },
+      { hanzi: "他是老师。", pinyin: "Tā shì lǎoshī.", ru: "Он учитель." },
+      { hanzi: "这是水。", pinyin: "Zhè shì shuǐ.", ru: "Это вода." },
+    ],
+    practice: { q: "Выбери верное продолжение: «我 ___ 学生。»", opts: ["是", "好", "吗"], correct: 0 } },
+
+  { id: 2, title: "Личные местоимения",
+    explain: "我 (я), 你 (ты), 他/她 (он/она). Множественное число образуется добавлением 们: 我们 (мы), 你们 (вы), 他们 (они).",
+    formula: "местоимение + 们 = множественное число",
+    examples: [
+      { hanzi: "我们是朋友。", pinyin: "Wǒmen shì péngyou.", ru: "Мы друзья." },
+      { hanzi: "他们是学生。", pinyin: "Tāmen shì xuésheng.", ru: "Они студенты." },
+      { hanzi: "你们好！", pinyin: "Nǐmen hǎo!", ru: "Здравствуйте! (к группе людей)" },
+    ],
+    practice: { q: "Как сказать «мы»?", opts: ["我", "你们", "我们"], correct: 2 } },
+
+  { id: 3, title: "吗 — вопросительная частица",
+    explain: "吗 добавляется в конец обычного утвердительного предложения и превращает его в вопрос с ответом «да/нет». Порядок остальных слов не меняется.",
+    formula: "Утверждение + 吗？",
+    examples: [
+      { hanzi: "你是学生吗？", pinyin: "Nǐ shì xuésheng ma?", ru: "Ты студент?" },
+      { hanzi: "他忙吗？", pinyin: "Tā máng ma?", ru: "Он занят?" },
+      { hanzi: "你好吗？", pinyin: "Nǐ hǎo ma?", ru: "Как дела?" },
+    ],
+    practice: { q: "Чем закончить вопрос «你是老师___？»", opts: ["吗", "呢", "了"], correct: 0 } },
+
+  { id: 4, title: "Отрицание с 不",
+    explain: "不 ставится прямо перед глаголом или прилагательным. Исключение: глагол 有 отрицается через 没(有), а не через 不.",
+    formula: "不 + глагол / прилагательное",
+    examples: [
+      { hanzi: "我不是学生。", pinyin: "Wǒ bú shì xuésheng.", ru: "Я не студент." },
+      { hanzi: "他不忙。", pinyin: "Tā bù máng.", ru: "Он не занят." },
+      { hanzi: "我不喜欢咖啡。", pinyin: "Wǒ bù xǐhuan kāfēi.", ru: "Мне не нравится кофе." },
+    ],
+    practice: { q: "Как правильно отрицать 有 (иметь)?", opts: ["不有", "没有", "不是有"], correct: 1 } },
+
+  { id: 5, title: "有 — иметь, иметься",
+    explain: "有 означает «иметь» (обладание) или «имеется, есть в наличии». Отрицательная форма — исключение из общего правила: 没有, а не 不有.",
+    formula: "Подлежащее + 有 + объект",
+    examples: [
+      { hanzi: "我有一个朋友。", pinyin: "Wǒ yǒu yí ge péngyou.", ru: "У меня есть один друг." },
+      { hanzi: "我没有时间。", pinyin: "Wǒ méiyǒu shíjiān.", ru: "У меня нет времени." },
+      { hanzi: "你有书吗？", pinyin: "Nǐ yǒu shū ma?", ru: "У тебя есть книга?" },
+    ],
+    practice: { q: "«У меня нет книги» — как сказать?", opts: ["我不有书。", "我没有书。", "我是没书。"], correct: 1 } },
+
+  { id: 6, title: "Счётные слова (量词)",
+    explain: "Между числительным и существительным в китайском обязательно нужно счётное слово — оно зависит от типа предмета. 个 — самое универсальное, подходит почти везде, если не уверен.",
+    formula: "числительное + счётное слово + существительное",
+    examples: [
+      { hanzi: "一个人", pinyin: "yí ge rén", ru: "один человек" },
+      { hanzi: "三本书", pinyin: "sān běn shū", ru: "три книги (本 — для книг)" },
+      { hanzi: "一杯茶", pinyin: "yì bēi chá", ru: "чашка чая (杯 — для напитков)" },
+    ],
+    practice: { q: "«Два человека» — а не 二个人, а...", opts: ["二个人", "两个人", "二人个"], correct: 1 } },
+
+  { id: 7, title: "这 / 那 + счётное слово",
+    explain: "Указательные местоимения 这 (этот) и 那 (тот) тоже требуют счётного слова перед существительным, как и числительные.",
+    formula: "这/那 + счётное слово + существительное",
+    examples: [
+      { hanzi: "这个人", pinyin: "zhège rén", ru: "этот человек" },
+      { hanzi: "那本书", pinyin: "nà běn shū", ru: "та книга" },
+      { hanzi: "这些朋友", pinyin: "zhèxiē péngyou", ru: "эти друзья (些 — для множественного числа)" },
+    ],
+    practice: { q: "Как сказать «эта чашка чая»?", opts: ["这杯茶", "这茶杯", "这个茶"], correct: 0 } },
+
+  { id: 8, title: "Вопросительные слова",
+    explain: "什么 (что), 谁 (кто), 哪儿 (где), 怎么 (как), 为什么 (почему), 多少/几 (сколько). Важно: вопросительное слово стоит на месте того члена предложения, о котором спрашивают — порядок остальных слов не меняется, в отличие от русского и английского.",
+    formula: "Подлежащее + сказуемое + вопросительное слово (на месте ответа)",
+    examples: [
+      { hanzi: "这是什么？", pinyin: "Zhè shì shénme?", ru: "Что это?" },
+      { hanzi: "他是谁？", pinyin: "Tā shì shéi?", ru: "Кто он?" },
+      { hanzi: "你在哪儿？", pinyin: "Nǐ zài nǎr?", ru: "Где ты?" },
+    ],
+    practice: { q: "Как спросить «Кто это»?", opts: ["谁是这？", "这是谁？", "是谁这？"], correct: 1 } },
+
+  { id: 9, title: "Прилагательное как сказуемое",
+    explain: "В китайском прилагательное само по себе выступает сказуемым — 是 перед ним не нужен и даже ошибочен. Перед прилагательным обычно ставят 很 — часто это просто нейтральный маркер, не всегда «очень».",
+    formula: "Подлежащее + (很) + прилагательное",
+    examples: [
+      { hanzi: "我很好。", pinyin: "Wǒ hěn hǎo.", ru: "У меня всё хорошо." },
+      { hanzi: "天气很冷。", pinyin: "Tiānqì hěn lěng.", ru: "Погода холодная." },
+      { hanzi: "她很高。", pinyin: "Tā hěn gāo.", ru: "Она высокая." },
+    ],
+    practice: { q: "Что здесь лишнее: «我是很好」?", opts: ["很", "是", "好"], correct: 1 } },
+
+  { id: 10, title: "在 — местонахождение и действие в процессе",
+    explain: "在 + место означает «находиться где-то». 在 + глагол означает, что действие происходит прямо сейчас — аналог «сейчас делаю».",
+    formula: "在 + место  ИЛИ  在 + глагол",
+    examples: [
+      { hanzi: "我在家。", pinyin: "Wǒ zài jiā.", ru: "Я дома." },
+      { hanzi: "他在看书。", pinyin: "Tā zài kàn shū.", ru: "Он сейчас читает книгу." },
+      { hanzi: "你在哪儿工作？", pinyin: "Nǐ zài nǎr gōngzuò?", ru: "Где ты работаешь?" },
+    ],
+    practice: { q: "«Я сейчас ем» — как сказать?", opts: ["我吃在饭。", "我在吃饭。", "我饭在吃。"], correct: 1 } },
+
+  { id: 11, title: "想 / 要 — хотеть, собираться",
+    explain: "Оба переводятся как «хотеть», но 要 звучит увереннее и конкретнее («собираюсь сделать»), а 想 — мягче, ближе к «хотелось бы».",
+    formula: "想/要 + глагол",
+    examples: [
+      { hanzi: "我想喝茶。", pinyin: "Wǒ xiǎng hē chá.", ru: "Мне хочется чаю." },
+      { hanzi: "我要去北京。", pinyin: "Wǒ yào qù Běijīng.", ru: "Я собираюсь поехать в Пекин." },
+      { hanzi: "你想吃什么？", pinyin: "Nǐ xiǎng chī shénme?", ru: "Что бы ты хотел поесть?" },
+    ],
+    practice: { q: "Какое слово звучит увереннее — «точно собираюсь»?", opts: ["想", "要", "有"], correct: 1 } },
+
+  { id: 12, title: "Дни недели и время",
+    explain: "星期 + число от 1 до 6 даёт дни недели с понедельника по субботу, воскресенье — особое слово 星期天 (или 星期日). Время суток: число + 点 (час) + 分 (минута).",
+    formula: "星期 + 1–6 = дни недели; число + 点 = часы",
+    examples: [
+      { hanzi: "星期一", pinyin: "xīngqīyī", ru: "понедельник" },
+      { hanzi: "现在三点半。", pinyin: "Xiànzài sān diǎn bàn.", ru: "Сейчас половина четвёртого." },
+      { hanzi: "星期天我不上班。", pinyin: "Xīngqītiān wǒ bú shàngbān.", ru: "В воскресенье я не работаю." },
+    ],
+    practice: { q: "Как сказать «среда»?", opts: ["星期二", "星期三", "星期四"], correct: 1 } },
+
+  { id: 13, title: "了 после глагола — завершённое действие",
+    explain: "了, поставленное сразу после глагола, показывает, что действие уже произошло или завершилось — аналог прошедшего времени в конкретном контексте.",
+    formula: "глагол + 了 (+ объект)",
+    examples: [
+      { hanzi: "我吃了。", pinyin: "Wǒ chī le.", ru: "Я поел." },
+      { hanzi: "他去了学校。", pinyin: "Tā qùle xuéxiào.", ru: "Он пошёл в школу." },
+      { hanzi: "我买了一本书。", pinyin: "Wǒ mǎile yì běn shū.", ru: "Я купил книгу." },
+    ],
+    practice: { q: "Как показать, что действие уже случилось?", opts: ["глагол + 吗", "глагол + 了", "глагол + 很"], correct: 1 } },
+
+  { id: 14, title: "Порядок слов: время → место → действие",
+    explain: "Базовый порядок в китайском предложении: Подлежащее → Время → Место → Действие. Это отличается от русского, где порядок куда более гибкий.",
+    formula: "Подлежащее + время + место + глагол",
+    examples: [
+      { hanzi: "我今天在家学习。", pinyin: "Wǒ jīntiān zài jiā xuéxí.", ru: "Я сегодня дома учусь." },
+      { hanzi: "他明天去学校。", pinyin: "Tā míngtiān qù xuéxiào.", ru: "Он завтра пойдёт в школу." },
+      { hanzi: "我们晚上在饭馆吃饭。", pinyin: "Wǒmen wǎnshang zài fànguǎn chīfàn.", ru: "Мы вечером едим в ресторане." },
+    ],
+    practice: { q: "Какой порядок верный?", opts: ["我在家今天学习。", "我今天在家学习。", "我学习今天在家。"], correct: 1 } },
 ];
 
 const ALL_WORDS = LESSONS.flatMap(l => l.words);
@@ -411,23 +595,102 @@ document.getElementById("qNextBtn").onclick = () => {
 
 document.getElementById("modeLearnBtn").onclick = () => {
   mode = "learn";
-  document.getElementById("modeLearnBtn").classList.add("active");
-  document.getElementById("modeQuizBtn").classList.remove("active");
+  setActiveModeBtn("modeLearnBtn");
   document.getElementById("learnView").style.display = "block";
   document.getElementById("quizView").style.display = "none";
+  document.getElementById("grammarView").style.display = "none";
+  document.getElementById("lessonNav").style.display = "flex";
   index = 0;
   renderLearn();
 };
 
 document.getElementById("modeQuizBtn").onclick = () => {
   mode = "quiz";
-  document.getElementById("modeQuizBtn").classList.add("active");
-  document.getElementById("modeLearnBtn").classList.remove("active");
+  setActiveModeBtn("modeQuizBtn");
   document.getElementById("learnView").style.display = "none";
   document.getElementById("quizView").style.display = "block";
+  document.getElementById("grammarView").style.display = "none";
+  document.getElementById("lessonNav").style.display = "flex";
   index = 0;
   renderQuiz();
 };
+
+document.getElementById("modeGrammarBtn").onclick = () => {
+  mode = "grammar";
+  setActiveModeBtn("modeGrammarBtn");
+  document.getElementById("learnView").style.display = "none";
+  document.getElementById("quizView").style.display = "none";
+  document.getElementById("grammarView").style.display = "block";
+  document.getElementById("lessonNav").style.display = "none";
+  showGrammarList();
+};
+
+function setActiveModeBtn(id) {
+  ["modeLearnBtn", "modeQuizBtn", "modeGrammarBtn"].forEach(b => document.getElementById(b).classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+}
+
+function showGrammarList() {
+  document.getElementById("gList").style.display = "flex";
+  document.getElementById("gDetail").style.display = "none";
+  const list = document.getElementById("gList");
+  list.innerHTML = "";
+  GRAMMAR.forEach(g => {
+    const btn = document.createElement("button");
+    btn.className = "g-item";
+    btn.innerHTML = '<span class="g-num hanzi">' + String(g.id).padStart(2, "0") + '</span><span class="g-title">' + g.title + '</span>';
+    btn.onclick = () => showGrammarDetail(g.id);
+    list.appendChild(btn);
+  });
+}
+
+function showGrammarDetail(id) {
+  const g = GRAMMAR.find(x => x.id === id);
+  document.getElementById("gList").style.display = "none";
+  document.getElementById("gDetail").style.display = "block";
+  document.getElementById("gTitle").textContent = g.title;
+  document.getElementById("gExplain").textContent = g.explain;
+  document.getElementById("gFormula").textContent = g.formula;
+
+  const exDiv = document.getElementById("gExamples");
+  exDiv.innerHTML = "";
+  g.examples.forEach(ex => {
+    const d = document.createElement("div");
+    d.className = "g-example";
+    d.innerHTML =
+      '<span class="g-ex-hanzi">' + ex.hanzi + '</span>' +
+      '<span class="g-ex-pinyin">' + ex.pinyin + '</span>' +
+      '<span class="g-ex-ru">' + ex.ru + '</span>';
+    exDiv.appendChild(d);
+  });
+
+  document.getElementById("gPracticeQ").textContent = g.practice.q;
+  const optsDiv = document.getElementById("gPracticeOpts");
+  optsDiv.innerHTML = "";
+  let answered = false;
+  g.practice.opts.forEach((optText, i) => {
+    const btn = document.createElement("button");
+    btn.className = "opt hanzi";
+    btn.textContent = optText;
+    btn.onclick = () => {
+      if (answered) return;
+      answered = true;
+      [...optsDiv.children].forEach(c => c.disabled = true);
+      if (i === g.practice.correct) btn.classList.add("correct");
+      else {
+        btn.classList.add("wrong");
+        optsDiv.children[g.practice.correct].classList.add("correct");
+      }
+      try {
+        window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.HapticFeedback &&
+        window.Telegram.WebApp.HapticFeedback.notificationOccurred(i === g.practice.correct ? "success" : "error");
+      } catch (e) {}
+    };
+    optsDiv.appendChild(btn);
+  });
+}
+
+document.getElementById("gBackBtn").onclick = showGrammarList;
 
 renderNav();
 renderLearn();
