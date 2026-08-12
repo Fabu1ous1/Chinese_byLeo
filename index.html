@@ -5,28 +5,148 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 <title>汉语 · Первые иероглифы</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
-<script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-<script src="https://cdn.tailwindcss.com"></script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@500;700&family=Spectral:ital,wght@0,500;0,600;1,500&family=Inter:wght@400;500;600&display=swap');
-  body { margin: 0; background: #1B1B20; }
-  .hanzi-font { font-family: 'Noto Serif SC', serif; }
-  .display-font { font-family: 'Spectral', serif; }
-  .ui-font { font-family: 'Inter', sans-serif; }
-  .flip-card { perspective: 1200px; }
-  .flip-inner { transition: transform 0.5s; transform-style: preserve-3d; }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: #1B1B20;
+    color: #E8E1CF;
+    font-family: 'Inter', sans-serif;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .wrap { max-width: 420px; margin: 0 auto; padding: 32px 20px 64px; }
+  .hanzi { font-family: 'Noto Serif SC', serif; }
+  .display { font-family: 'Spectral', serif; font-style: italic; }
+
+  header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px; }
+  .eyebrow { font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; opacity: 0.6; margin: 0 0 4px; }
+  h1 { font-size: 24px; margin: 0; }
+  .seal {
+    width: 64px; height: 64px; border: 4px solid #A6332B; color: #A6332B;
+    border-radius: 4px; display: flex; flex-direction: column; align-items: center;
+    justify-content: center; transform: rotate(-3deg); font-family: 'Noto Serif SC', serif;
+    flex-shrink: 0;
+  }
+  .seal b { font-size: 18px; line-height: 1; }
+  .seal span { font-size: 10px; line-height: 1; margin-top: 4px; opacity: 0.7; }
+
+  nav { display: flex; gap: 8px; margin-bottom: 20px; overflow-x: auto; padding-bottom: 4px; }
+  nav button {
+    font-family: 'Inter', sans-serif; font-size: 12px; padding: 7px 14px; border-radius: 999px;
+    white-space: nowrap; border: 1px solid #4A4A52; background: transparent; color: #B8B3A5;
+  }
+  nav button.active { background: #A6332B; border-color: #A6332B; color: #E8E1CF; }
+
+  .modes { display: flex; gap: 8px; margin-bottom: 24px; }
+  .modes button {
+    flex: 1; font-size: 14px; padding: 10px; border-radius: 8px; border: 1px solid #4A4A52;
+    background: transparent; color: #B8B3A5; font-family: 'Inter', sans-serif;
+  }
+  .modes button.active { background: #B8933E; border-color: #B8933E; color: #1B1B20; font-weight: 600; }
+
+  .flip-card { perspective: 1200px; margin-bottom: 20px; height: 260px; cursor: pointer; }
+  .flip-inner { position: relative; width: 100%; height: 100%; transition: transform 0.5s; transform-style: preserve-3d; }
   .flip-inner.flipped { transform: rotateY(180deg); }
-  .flip-face { backface-visibility: hidden; }
-  .flip-back { transform: rotateY(180deg); }
+  .flip-face {
+    position: absolute; inset: 0; border-radius: 10px; backface-visibility: hidden;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px;
+  }
+  .flip-front { background: #E8E1CF; color: #1B1B20; }
+  .flip-back { background: #A6332B; color: #E8E1CF; transform: rotateY(180deg); }
+  .flip-front .char { font-size: 64px; }
+  .tone-row { display: flex; align-items: center; gap: 8px; }
+  .tone-row span { font-size: 13px; opacity: 0.6; }
+  .hint { font-size: 12px; opacity: 0.5; margin-top: 8px; }
+  .flip-back .pinyin { font-size: 24px; }
+  .flip-back .ru { font-size: 18px; }
+
+  .row { display: flex; gap: 8px; }
+  .btn-outline {
+    flex: 1; padding: 11px; border-radius: 8px; font-size: 14px; font-weight: 500;
+    background: transparent; border: 1px solid #4F6F62; color: #4F6F62; font-family: 'Inter', sans-serif;
+  }
+  .btn-outline.done { background: #4F6F62; color: #E8E1CF; }
+  .btn-solid {
+    padding: 11px 20px; border-radius: 8px; font-size: 14px; font-weight: 500;
+    background: #E8E1CF; color: #1B1B20; border: none; font-family: 'Inter', sans-serif;
+  }
+  .counter { text-align: center; font-size: 12px; opacity: 0.5; margin-top: 16px; }
+
+  .quiz-card {
+    border-radius: 10px; background: #E8E1CF; color: #1B1B20; height: 180px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; margin-bottom: 20px;
+  }
+  .quiz-card .char { font-size: 56px; font-family: 'Noto Serif SC', serif; }
+  .quiz-card .pinyin { font-size: 18px; opacity: 0.6; }
+  .quiz-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.15em; opacity: 0.6; margin-bottom: 8px; }
+  .options { display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px; }
+  .opt {
+    text-align: left; padding: 12px 16px; border-radius: 8px; font-size: 14px;
+    border: 1px solid #4A4A52; background: transparent; color: #E8E1CF; font-family: 'Inter', sans-serif;
+  }
+  .opt.correct { background: #4F6F62; border-color: #4F6F62; color: #E8E1CF; }
+  .opt.wrong { background: #A6332B; border-color: #A6332B; color: #E8E1CF; }
+  .next-btn { width: 100%; padding: 11px; border-radius: 8px; font-size: 14px; font-weight: 500; background: #E8E1CF; color: #1B1B20; border: none; font-family: 'Inter', sans-serif; }
 </style>
 </head>
 <body>
-<div id="root"></div>
-<script type="text/babel" data-presets="react">
+<div class="wrap">
+  <header>
+    <div>
+      <p class="eyebrow">汉语 · с нуля</p>
+      <h1 class="display">Первые иероглифы</h1>
+    </div>
+    <div class="seal"><b id="sealCount">0</b><span id="sealTotal">/ 48</span></div>
+  </header>
 
-const { useState, useEffect, useMemo } = React;
+  <nav id="lessonNav"></nav>
+
+  <div class="modes">
+    <button id="modeLearnBtn" class="active">Учить</button>
+    <button id="modeQuizBtn">Тест</button>
+  </div>
+
+  <div id="learnView">
+    <div class="flip-card" id="flipCard">
+      <div class="flip-inner" id="flipInner">
+        <div class="flip-face flip-front">
+          <span class="char hanzi" id="fCharFront"></span>
+          <div class="tone-row"><svg id="toneSvg" width="22" height="22" viewBox="0 0 22 22" fill="none"></svg><span id="toneLabel"></span></div>
+          <p class="hint">нажми, чтобы перевернуть</p>
+        </div>
+        <div class="flip-face flip-back">
+          <span class="pinyin display" id="fPinyin"></span>
+          <span class="ru" id="fRu"></span>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <button class="btn-outline" id="markBtn">Отметить выученным</button>
+      <button class="btn-solid" id="nextBtn">Далее →</button>
+    </div>
+    <p class="counter" id="counter"></p>
+  </div>
+
+  <div id="quizView" style="display:none;">
+    <div class="quiz-card">
+      <span class="char" id="qChar"></span>
+      <span class="pinyin display" id="qPinyin"></span>
+    </div>
+    <p class="quiz-label">Что это значит?</p>
+    <div class="options" id="qOptions"></div>
+    <button class="next-btn" id="qNextBtn" style="display:none;">Следующий вопрос →</button>
+  </div>
+</div>
+
+<script>
+try {
+  if (window.Telegram && window.Telegram.WebApp) {
+    window.Telegram.WebApp.ready();
+    window.Telegram.WebApp.expand();
+  }
+} catch (e) {}
 
 const LESSONS = [
   { id: 1, title: "Приветствия", words: [
@@ -91,202 +211,167 @@ const LESSONS = [
   ]},
 ];
 
-const ALL_WORDS = LESSONS.flatMap((l) => l.words.map((w) => ({ ...w, lesson: l.id })));
+const ALL_WORDS = LESSONS.flatMap(l => l.words);
 const TONE_LABEL = { 1: "1-й, ровный", 2: "2-й, восходящий", 3: "3-й, падающе-восходящий", 4: "4-й, падающий" };
+const TONE_PATH = {
+  1: "M2 11 H20",
+  2: "M2 17 Q11 3 20 3",
+  3: "M2 6 Q7 20 11 11 Q15 3 20 17",
+  4: "M2 3 Q11 3 20 19",
+};
 
-function ToneMark({ tone, size = 22, color = "#A6332B" }) {
-  const paths = {
-    1: "M2 11 H20",
-    2: "M2 17 Q11 3 20 3",
-    3: "M2 6 Q7 20 11 11 Q15 3 20 17",
-    4: "M2 3 Q11 3 20 19",
-  };
-  return React.createElement("svg", { width: size, height: size, viewBox: "0 0 22 22", fill: "none" },
-    React.createElement("path", { d: paths[tone] || paths[1], stroke: color, strokeWidth: "2.4", strokeLinecap: "round" })
-  );
+let learned = {};
+try {
+  const saved = localStorage.getItem("chinese_progress");
+  if (saved) learned = JSON.parse(saved);
+} catch (e) {}
+
+let lessonId = 1;
+let mode = "learn";
+let index = 0;
+let flipped = false;
+let quizWord = null;
+let quizAnswered = false;
+
+function saveProgress() {
+  try { localStorage.setItem("chinese_progress", JSON.stringify(learned)); } catch (e) {}
 }
 
-function Seal({ learned, total }) {
-  return (
-    <div className="relative flex flex-col items-center justify-center border-4 rounded-sm"
-      style={{ borderColor: "#A6332B", color: "#A6332B", width: 64, height: 64, transform: "rotate(-3deg)", fontFamily: "'Noto Serif SC', serif" }}>
-      <span className="text-lg font-bold leading-none">{learned}</span>
-      <span className="text-[10px] leading-none mt-1 opacity-70">/ {total}</span>
-    </div>
-  );
+function currentWords() {
+  return LESSONS.find(l => l.id === lessonId).words;
 }
 
-function ChineseApp() {
-  const [learned, setLearned] = useState({});
-  const [loaded, setLoaded] = useState(false);
-  const [lessonId, setLessonId] = useState(1);
-  const [mode, setMode] = useState("learn");
-  const [index, setIndex] = useState(0);
-  const [flipped, setFlipped] = useState(false);
-  const [quizWord, setQuizWord] = useState(null);
-  const [quizOptions, setQuizOptions] = useState([]);
-  const [quizAnswer, setQuizAnswer] = useState(null);
+function updateSeal() {
+  const count = Object.keys(learned).filter(k => learned[k]).length;
+  document.getElementById("sealCount").textContent = count;
+  document.getElementById("sealTotal").textContent = "/ " + ALL_WORDS.length;
+}
 
-  const words = useMemo(() => LESSONS.find((l) => l.id === lessonId).words, [lessonId]);
-  const totalLearned = Object.keys(learned).filter((k) => learned[k]).length;
+function renderNav() {
+  const nav = document.getElementById("lessonNav");
+  nav.innerHTML = "";
+  LESSONS.forEach(l => {
+    const b = document.createElement("button");
+    b.textContent = l.id + ". " + l.title;
+    if (l.id === lessonId) b.classList.add("active");
+    b.onclick = () => { lessonId = l.id; index = 0; flipped = false; renderNav(); renderLearn(); renderQuiz(true); };
+    nav.appendChild(b);
+  });
+}
 
-  useEffect(() => {
-    try {
-      if (window.Telegram && window.Telegram.WebApp) {
-        window.Telegram.WebApp.ready();
-        window.Telegram.WebApp.expand();
-      }
-    } catch (e) {}
-  }, []);
-
-  useEffect(() => {
-    try {
-      const saved = localStorage.getItem("chinese_progress");
-      if (saved) setLearned(JSON.parse(saved));
-    } catch (e) {}
-    setLoaded(true);
-  }, []);
-
-  useEffect(() => {
-    if (!loaded) return;
-    try {
-      localStorage.setItem("chinese_progress", JSON.stringify(learned));
-    } catch (e) {}
-  }, [learned, loaded]);
-
-  useEffect(() => {
-    setIndex(0);
-    setFlipped(false);
-  }, [lessonId, mode]);
-
-  useEffect(() => {
-    if (mode !== "quiz") return;
-    const w = words[index % words.length];
-    const wrongPool = ALL_WORDS.filter((x) => x.hanzi !== w.hanzi);
-    const wrongs = [];
-    while (wrongs.length < 3 && wrongPool.length) {
-      const pick = wrongPool[Math.floor(Math.random() * wrongPool.length)];
-      if (!wrongs.find((x) => x.hanzi === pick.hanzi)) wrongs.push(pick);
-    }
-    const opts = [w, ...wrongs].sort(() => Math.random() - 0.5);
-    setQuizWord(w);
-    setQuizOptions(opts);
-    setQuizAnswer(null);
-  }, [mode, index, lessonId]);
-
-  const markLearned = (hanzi) => setLearned((prev) => ({ ...prev, [hanzi]: true }));
-  const next = () => { setFlipped(false); setIndex((i) => (i + 1) % words.length); };
+function renderLearn() {
+  const words = currentWords();
   const w = words[index % words.length];
-
-  return (
-    <div className="min-h-screen w-full" style={{ background: "#1B1B20", color: "#E8E1CF" }}>
-      <div className="max-w-md mx-auto px-5 pt-8 pb-16">
-        <header className="flex items-start justify-between mb-6">
-          <div>
-            <p className="ui-font text-xs tracking-widest uppercase opacity-60 mb-1">汉语 · с нуля</p>
-            <h1 className="display-font text-2xl italic" style={{ color: "#E8E1CF" }}>Первые иероглифы</h1>
-          </div>
-          <Seal learned={totalLearned} total={ALL_WORDS.length} />
-        </header>
-
-        <nav className="flex gap-2 mb-5 overflow-x-auto">
-          {LESSONS.map((l) => (
-            <button key={l.id} onClick={() => setLessonId(l.id)}
-              className="ui-font text-xs px-3 py-1.5 rounded-full whitespace-nowrap border transition-colors"
-              style={lessonId === l.id ? { background: "#A6332B", borderColor: "#A6332B", color: "#E8E1CF" } : { borderColor: "#4A4A52", color: "#B8B3A5" }}>
-              {l.id}. {l.title}
-            </button>
-          ))}
-        </nav>
-
-        <div className="flex gap-2 mb-6">
-          {[{ id: "learn", label: "Учить" }, { id: "quiz", label: "Тест" }].map((m) => (
-            <button key={m.id} onClick={() => setMode(m.id)}
-              className="ui-font text-sm flex-1 py-2 rounded-md border transition-colors"
-              style={mode === m.id ? { background: "#B8933E", borderColor: "#B8933E", color: "#1B1B20", fontWeight: 600 } : { borderColor: "#4A4A52", color: "#B8B3A5" }}>
-              {m.label}
-            </button>
-          ))}
-        </div>
-
-        {mode === "learn" && (
-          <div>
-            <div className="flip-card mb-5" onClick={() => setFlipped((f) => !f)}>
-              <div className={"flip-inner relative rounded-lg cursor-pointer " + (flipped ? "flipped" : "")} style={{ height: 260 }}>
-                <div className="flip-face absolute inset-0 rounded-lg flex flex-col items-center justify-center gap-3" style={{ background: "#E8E1CF", color: "#1B1B20" }}>
-                  <span className="hanzi-font text-7xl">{w.hanzi}</span>
-                  <div className="flex items-center gap-2">
-                    <ToneMark tone={w.tone} />
-                    <span className="ui-font text-sm opacity-60">{TONE_LABEL[w.tone]}</span>
-                  </div>
-                  <p className="ui-font text-xs opacity-50 mt-2">нажми, чтобы перевернуть</p>
-                </div>
-                <div className="flip-face flip-back absolute inset-0 rounded-lg flex flex-col items-center justify-center gap-2" style={{ background: "#A6332B", color: "#E8E1CF" }}>
-                  <span className="display-font italic text-2xl">{w.pinyin}</span>
-                  <span className="ui-font text-lg">{w.ru}</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="flex gap-2">
-              <button onClick={() => markLearned(w.hanzi)} className="ui-font flex-1 py-2.5 rounded-md text-sm font-medium"
-                style={{ background: learned[w.hanzi] ? "#4F6F62" : "transparent", border: "1px solid #4F6F62", color: learned[w.hanzi] ? "#E8E1CF" : "#4F6F62" }}>
-                {learned[w.hanzi] ? "Выучено ✓" : "Отметить выученным"}
-              </button>
-              <button onClick={next} className="ui-font px-5 py-2.5 rounded-md text-sm font-medium" style={{ background: "#E8E1CF", color: "#1B1B20" }}>
-                Далее →
-              </button>
-            </div>
-
-            <p className="ui-font text-xs text-center mt-4 opacity-50">{(index % words.length) + 1} / {words.length} в этом уроке</p>
-          </div>
-        )}
-
-        {mode === "quiz" && quizWord && (
-          <div>
-            <div className="rounded-lg flex flex-col items-center justify-center gap-2 mb-5" style={{ background: "#E8E1CF", color: "#1B1B20", height: 180 }}>
-              <span className="hanzi-font text-6xl">{quizWord.hanzi}</span>
-              <span className="display-font italic text-lg opacity-60">{quizWord.pinyin}</span>
-            </div>
-            <p className="ui-font text-xs uppercase tracking-widest opacity-60 mb-2">Что это значит?</p>
-            <div className="flex flex-col gap-2 mb-5">
-              {quizOptions.map((opt) => {
-                const isCorrect = opt.hanzi === quizWord.hanzi;
-                const showState = quizAnswer !== null;
-                let style = { borderColor: "#4A4A52", color: "#E8E1CF" };
-                if (showState && isCorrect) style = { background: "#4F6F62", borderColor: "#4F6F62", color: "#E8E1CF" };
-                else if (showState && opt.hanzi === quizAnswer && !isCorrect) style = { background: "#A6332B", borderColor: "#A6332B", color: "#E8E1CF" };
-                return (
-                  <button key={opt.hanzi} disabled={showState}
-                    onClick={() => {
-                      setQuizAnswer(opt.hanzi);
-                      if (isCorrect) markLearned(quizWord.hanzi);
-                      try {
-                        window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.HapticFeedback &&
-                        window.Telegram.WebApp.HapticFeedback.notificationOccurred(isCorrect ? "success" : "error");
-                      } catch (e) {}
-                    }}
-                    className="ui-font text-left px-4 py-3 rounded-md border text-sm" style={style}>
-                    {opt.ru}
-                  </button>
-                );
-              })}
-            </div>
-            {quizAnswer !== null && (
-              <button onClick={next} className="ui-font w-full py-2.5 rounded-md text-sm font-medium" style={{ background: "#E8E1CF", color: "#1B1B20" }}>
-                Следующий вопрос →
-              </button>
-            )}
-          </div>
-        )}
-      </div>
-    </div>
-  );
+  document.getElementById("fCharFront").textContent = w.hanzi;
+  document.getElementById("fPinyin").textContent = w.pinyin;
+  document.getElementById("fRu").textContent = w.ru;
+  document.getElementById("toneLabel").textContent = TONE_LABEL[w.tone];
+  document.getElementById("toneSvg").innerHTML =
+    '<path d="' + (TONE_PATH[w.tone] || TONE_PATH[1]) + '" stroke="#A6332B" stroke-width="2.4" stroke-linecap="round"/>';
+  document.getElementById("flipInner").classList.remove("flipped");
+  flipped = false;
+  const markBtn = document.getElementById("markBtn");
+  if (learned[w.hanzi]) { markBtn.textContent = "Выучено ✓"; markBtn.classList.add("done"); }
+  else { markBtn.textContent = "Отметить выученным"; markBtn.classList.remove("done"); }
+  document.getElementById("counter").textContent = ((index % words.length) + 1) + " / " + words.length + " в этом уроке";
+  updateSeal();
 }
 
-const root = ReactDOM.createRoot(document.getElementById("root"));
-root.render(<ChineseApp />);
+function renderQuiz(reset) {
+  if (mode !== "quiz") return;
+  const words = currentWords();
+  const w = words[index % words.length];
+  quizWord = w;
+  quizAnswered = false;
+  document.getElementById("qChar").textContent = w.hanzi;
+  document.getElementById("qPinyin").textContent = w.pinyin;
 
+  const wrongPool = ALL_WORDS.filter(x => x.hanzi !== w.hanzi);
+  const wrongs = [];
+  while (wrongs.length < 3 && wrongPool.length) {
+    const pick = wrongPool[Math.floor(Math.random() * wrongPool.length)];
+    if (!wrongs.find(x => x.hanzi === pick.hanzi)) wrongs.push(pick);
+  }
+  const opts = [w, ...wrongs].sort(() => Math.random() - 0.5);
+
+  const optsDiv = document.getElementById("qOptions");
+  optsDiv.innerHTML = "";
+  opts.forEach(opt => {
+    const btn = document.createElement("button");
+    btn.className = "opt";
+    btn.textContent = opt.ru;
+    btn.onclick = () => {
+      if (quizAnswered) return;
+      quizAnswered = true;
+      const isCorrect = opt.hanzi === w.hanzi;
+      if (isCorrect) { learned[w.hanzi] = true; saveProgress(); updateSeal(); }
+      [...optsDiv.children].forEach(child => {
+        child.disabled = true;
+      });
+      if (isCorrect) btn.classList.add("correct");
+      else {
+        btn.classList.add("wrong");
+        [...optsDiv.children].find(c => c.textContent === w.ru).classList.add("correct");
+      }
+      try {
+        window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.HapticFeedback &&
+        window.Telegram.WebApp.HapticFeedback.notificationOccurred(isCorrect ? "success" : "error");
+      } catch (e) {}
+      document.getElementById("qNextBtn").style.display = "block";
+    };
+    optsDiv.appendChild(btn);
+  });
+  document.getElementById("qNextBtn").style.display = "none";
+  updateSeal();
+}
+
+document.getElementById("flipCard").onclick = () => {
+  flipped = !flipped;
+  document.getElementById("flipInner").classList.toggle("flipped", flipped);
+};
+
+document.getElementById("markBtn").onclick = () => {
+  const words = currentWords();
+  const w = words[index % words.length];
+  learned[w.hanzi] = true;
+  saveProgress();
+  renderLearn();
+};
+
+document.getElementById("nextBtn").onclick = () => {
+  const words = currentWords();
+  index = (index + 1) % words.length;
+  renderLearn();
+};
+
+document.getElementById("qNextBtn").onclick = () => {
+  const words = currentWords();
+  index = (index + 1) % words.length;
+  renderQuiz();
+};
+
+document.getElementById("modeLearnBtn").onclick = () => {
+  mode = "learn";
+  document.getElementById("modeLearnBtn").classList.add("active");
+  document.getElementById("modeQuizBtn").classList.remove("active");
+  document.getElementById("learnView").style.display = "block";
+  document.getElementById("quizView").style.display = "none";
+  index = 0;
+  renderLearn();
+};
+
+document.getElementById("modeQuizBtn").onclick = () => {
+  mode = "quiz";
+  document.getElementById("modeQuizBtn").classList.add("active");
+  document.getElementById("modeLearnBtn").classList.remove("active");
+  document.getElementById("learnView").style.display = "none";
+  document.getElementById("quizView").style.display = "block";
+  index = 0;
+  renderQuiz();
+};
+
+renderNav();
+renderLearn();
 </script>
 </body>
 </html>
