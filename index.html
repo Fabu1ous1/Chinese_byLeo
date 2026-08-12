@@ -46,21 +46,29 @@
   }
   .modes button.active { background: #B8933E; border-color: #B8933E; color: #1B1B20; font-weight: 600; }
 
-  .flip-card { perspective: 1200px; margin-bottom: 20px; height: 260px; cursor: pointer; }
+  .flip-card { perspective: 1200px; margin-bottom: 20px; height: 310px; cursor: pointer; }
   .flip-inner { position: relative; width: 100%; height: 100%; transition: transform 0.5s; transform-style: preserve-3d; }
   .flip-inner.flipped { transform: rotateY(180deg); }
   .flip-face {
     position: absolute; inset: 0; border-radius: 10px; backface-visibility: hidden;
-    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px;
+    padding: 16px;
   }
   .flip-front { background: #E8E1CF; color: #1B1B20; }
   .flip-back { background: #A6332B; color: #E8E1CF; transform: rotateY(180deg); }
-  .flip-front .char { font-size: 64px; }
+  .flip-front .char { font-size: 60px; }
   .tone-row { display: flex; align-items: center; gap: 8px; }
   .tone-row span { font-size: 13px; opacity: 0.6; }
-  .hint { font-size: 12px; opacity: 0.5; margin-top: 8px; }
-  .flip-back .pinyin { font-size: 24px; }
-  .flip-back .ru { font-size: 18px; }
+  .hint { font-size: 12px; opacity: 0.5; margin-top: 4px; }
+  .flip-back .pinyin { font-size: 22px; }
+  .flip-back .ru { font-size: 17px; }
+  .example {
+    margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(232,225,207,0.25);
+    text-align: center; width: 100%;
+  }
+  .example .ex-hanzi { font-family: 'Noto Serif SC', serif; font-size: 18px; display: block; margin-bottom: 4px; }
+  .example .ex-pinyin { font-family: 'Spectral', serif; font-style: italic; font-size: 13px; opacity: 0.85; display: block; }
+  .example .ex-ru { font-size: 12px; opacity: 0.7; display: block; margin-top: 2px; }
 
   .row { display: flex; gap: 8px; }
   .btn-outline {
@@ -98,7 +106,7 @@
       <p class="eyebrow">汉语 · с нуля</p>
       <h1 class="display">Первые иероглифы</h1>
     </div>
-    <div class="seal"><b id="sealCount">0</b><span id="sealTotal">/ 48</span></div>
+    <div class="seal"><b id="sealCount">0</b><span id="sealTotal">/ 80</span></div>
   </header>
 
   <nav id="lessonNav"></nav>
@@ -119,6 +127,11 @@
         <div class="flip-face flip-back">
           <span class="pinyin display" id="fPinyin"></span>
           <span class="ru" id="fRu"></span>
+          <div class="example">
+            <span class="ex-hanzi hanzi" id="fExHanzi"></span>
+            <span class="ex-pinyin" id="fExPinyin"></span>
+            <span class="ex-ru" id="fExRu"></span>
+          </div>
         </div>
       </div>
     </div>
@@ -150,70 +163,113 @@ try {
 
 const LESSONS = [
   { id: 1, title: "Приветствия", words: [
-    { hanzi: "你", pinyin: "nǐ", tone: 3, ru: "ты" },
-    { hanzi: "你好", pinyin: "nǐ hǎo", tone: 3, ru: "привет" },
-    { hanzi: "谢谢", pinyin: "xièxie", tone: 4, ru: "спасибо" },
-    { hanzi: "再见", pinyin: "zàijiàn", tone: 4, ru: "до свидания" },
-    { hanzi: "是", pinyin: "shì", tone: 4, ru: "быть, да" },
-    { hanzi: "不", pinyin: "bù", tone: 4, ru: "не, нет" },
-    { hanzi: "我", pinyin: "wǒ", tone: 3, ru: "я" },
-    { hanzi: "他", pinyin: "tā", tone: 1, ru: "он" },
+    { hanzi: "你", pinyin: "nǐ", tone: 3, ru: "ты", ex: "你是谁？", exPinyin: "Nǐ shì shéi?", exRu: "Кто ты?" },
+    { hanzi: "你好", pinyin: "nǐ hǎo", tone: 3, ru: "привет", ex: "你好，我叫马克。", exPinyin: "Nǐ hǎo, wǒ jiào Mǎkè.", exRu: "Привет, меня зовут Марк." },
+    { hanzi: "谢谢", pinyin: "xièxie", tone: 4, ru: "спасибо", ex: "谢谢你的帮助。", exPinyin: "Xièxie nǐ de bāngzhù.", exRu: "Спасибо за помощь." },
+    { hanzi: "再见", pinyin: "zàijiàn", tone: 4, ru: "до свидания", ex: "明天见，再见！", exPinyin: "Míngtiān jiàn, zàijiàn!", exRu: "До завтра, пока!" },
+    { hanzi: "是", pinyin: "shì", tone: 4, ru: "быть, да", ex: "我是学生。", exPinyin: "Wǒ shì xuésheng.", exRu: "Я студент." },
+    { hanzi: "不", pinyin: "bù", tone: 4, ru: "не, нет", ex: "我不是老师。", exPinyin: "Wǒ bú shì lǎoshī.", exRu: "Я не учитель." },
+    { hanzi: "我", pinyin: "wǒ", tone: 3, ru: "я", ex: "我很好。", exPinyin: "Wǒ hěn hǎo.", exRu: "У меня всё хорошо." },
+    { hanzi: "他", pinyin: "tā", tone: 1, ru: "он", ex: "他是我朋友。", exPinyin: "Tā shì wǒ péngyou.", exRu: "Он мой друг." },
   ]},
   { id: 2, title: "Числа", words: [
-    { hanzi: "一", pinyin: "yī", tone: 1, ru: "один" },
-    { hanzi: "二", pinyin: "èr", tone: 4, ru: "два" },
-    { hanzi: "三", pinyin: "sān", tone: 1, ru: "три" },
-    { hanzi: "四", pinyin: "sì", tone: 4, ru: "четыре" },
-    { hanzi: "五", pinyin: "wǔ", tone: 3, ru: "пять" },
-    { hanzi: "六", pinyin: "liù", tone: 4, ru: "шесть" },
-    { hanzi: "七", pinyin: "qī", tone: 1, ru: "семь" },
-    { hanzi: "八", pinyin: "bā", tone: 1, ru: "восемь" },
+    { hanzi: "一", pinyin: "yī", tone: 1, ru: "один", ex: "我有一个朋友。", exPinyin: "Wǒ yǒu yí ge péngyou.", exRu: "У меня есть один друг." },
+    { hanzi: "二", pinyin: "èr", tone: 4, ru: "два", ex: "这是第二课。", exPinyin: "Zhè shì dì-èr kè.", exRu: "Это второй урок." },
+    { hanzi: "三", pinyin: "sān", tone: 1, ru: "три", ex: "现在三点。", exPinyin: "Xiànzài sān diǎn.", exRu: "Сейчас три часа." },
+    { hanzi: "四", pinyin: "sì", tone: 4, ru: "четыре", ex: "我家有四个人。", exPinyin: "Wǒ jiā yǒu sì ge rén.", exRu: "В моей семье четыре человека." },
+    { hanzi: "五", pinyin: "wǔ", tone: 3, ru: "пять", ex: "我五点回家。", exPinyin: "Wǒ wǔ diǎn huí jiā.", exRu: "Я вернусь домой в пять." },
+    { hanzi: "六", pinyin: "liù", tone: 4, ru: "шесть", ex: "现在六月。", exPinyin: "Xiànzài liù yuè.", exRu: "Сейчас июнь." },
+    { hanzi: "七", pinyin: "qī", tone: 1, ru: "семь", ex: "一星期有七天。", exPinyin: "Yì xīngqī yǒu qī tiān.", exRu: "В неделе семь дней." },
+    { hanzi: "八", pinyin: "bā", tone: 1, ru: "восемь", ex: "商店八点开门。", exPinyin: "Shāngdiàn bā diǎn kāimén.", exRu: "Магазин открывается в восемь." },
+    { hanzi: "九", pinyin: "jiǔ", tone: 3, ru: "девять", ex: "我九点睡觉。", exPinyin: "Wǒ jiǔ diǎn shuìjiào.", exRu: "Я ложусь спать в девять." },
+    { hanzi: "十", pinyin: "shí", tone: 2, ru: "десять", ex: "我学了十个汉字。", exPinyin: "Wǒ xuéle shí ge Hànzì.", exRu: "Я выучил десять иероглифов." },
   ]},
   { id: 3, title: "Люди и семья", words: [
-    { hanzi: "人", pinyin: "rén", tone: 2, ru: "человек" },
-    { hanzi: "家", pinyin: "jiā", tone: 1, ru: "дом, семья" },
-    { hanzi: "朋友", pinyin: "péngyou", tone: 2, ru: "друг" },
-    { hanzi: "老师", pinyin: "lǎoshī", tone: 3, ru: "учитель" },
-    { hanzi: "学生", pinyin: "xuésheng", tone: 2, ru: "ученик" },
-    { hanzi: "妈妈", pinyin: "māma", tone: 1, ru: "мама" },
-    { hanzi: "爸爸", pinyin: "bàba", tone: 4, ru: "папа" },
-    { hanzi: "孩子", pinyin: "háizi", tone: 2, ru: "ребёнок" },
+    { hanzi: "人", pinyin: "rén", tone: 2, ru: "человек", ex: "这里有很多人。", exPinyin: "Zhèlǐ yǒu hěn duō rén.", exRu: "Здесь много людей." },
+    { hanzi: "家", pinyin: "jiā", tone: 1, ru: "дом, семья", ex: "我爱我的家。", exPinyin: "Wǒ ài wǒ de jiā.", exRu: "Я люблю свою семью." },
+    { hanzi: "朋友", pinyin: "péngyou", tone: 2, ru: "друг", ex: "她是我的好朋友。", exPinyin: "Tā shì wǒ de hǎo péngyou.", exRu: "Она моя хорошая подруга." },
+    { hanzi: "老师", pinyin: "lǎoshī", tone: 3, ru: "учитель", ex: "我的老师很好。", exPinyin: "Wǒ de lǎoshī hěn hǎo.", exRu: "Мой учитель хороший." },
+    { hanzi: "学生", pinyin: "xuésheng", tone: 2, ru: "ученик", ex: "他是大学生。", exPinyin: "Tā shì dàxuéshēng.", exRu: "Он студент университета." },
+    { hanzi: "妈妈", pinyin: "māma", tone: 1, ru: "мама", ex: "妈妈在家。", exPinyin: "Māma zài jiā.", exRu: "Мама дома." },
+    { hanzi: "爸爸", pinyin: "bàba", tone: 4, ru: "папа", ex: "爸爸喜欢喝茶。", exPinyin: "Bàba xǐhuan hē chá.", exRu: "Папа любит пить чай." },
+    { hanzi: "孩子", pinyin: "háizi", tone: 2, ru: "ребёнок", ex: "这个孩子很可爱。", exPinyin: "Zhège háizi hěn kě'ài.", exRu: "Этот ребёнок очень милый." },
   ]},
   { id: 4, title: "Еда и быт", words: [
-    { hanzi: "吃", pinyin: "chī", tone: 1, ru: "есть (кушать)" },
-    { hanzi: "喝", pinyin: "hē", tone: 1, ru: "пить" },
-    { hanzi: "水", pinyin: "shuǐ", tone: 3, ru: "вода" },
-    { hanzi: "茶", pinyin: "chá", tone: 2, ru: "чай" },
-    { hanzi: "米饭", pinyin: "mǐfàn", tone: 3, ru: "рис (блюдо)" },
-    { hanzi: "大", pinyin: "dà", tone: 4, ru: "большой" },
-    { hanzi: "小", pinyin: "xiǎo", tone: 3, ru: "маленький" },
-    { hanzi: "喜欢", pinyin: "xǐhuan", tone: 3, ru: "нравиться" },
+    { hanzi: "吃", pinyin: "chī", tone: 1, ru: "есть (кушать)", ex: "我们一起吃饭吧。", exPinyin: "Wǒmen yìqǐ chīfàn ba.", exRu: "Давай поедим вместе." },
+    { hanzi: "喝", pinyin: "hē", tone: 1, ru: "пить", ex: "你想喝什么？", exPinyin: "Nǐ xiǎng hē shénme?", exRu: "Что ты хочешь выпить?" },
+    { hanzi: "水", pinyin: "shuǐ", tone: 3, ru: "вода", ex: "请给我一杯水。", exPinyin: "Qǐng gěi wǒ yì bēi shuǐ.", exRu: "Дайте мне стакан воды, пожалуйста." },
+    { hanzi: "茶", pinyin: "chá", tone: 2, ru: "чай", ex: "中国茶很有名。", exPinyin: "Zhōngguó chá hěn yǒumíng.", exRu: "Китайский чай очень известен." },
+    { hanzi: "米饭", pinyin: "mǐfàn", tone: 3, ru: "рис (блюдо)", ex: "我喜欢吃米饭。", exPinyin: "Wǒ xǐhuan chī mǐfàn.", exRu: "Я люблю есть рис." },
+    { hanzi: "大", pinyin: "dà", tone: 4, ru: "большой", ex: "这个房子很大。", exPinyin: "Zhège fángzi hěn dà.", exRu: "Этот дом очень большой." },
+    { hanzi: "小", pinyin: "xiǎo", tone: 3, ru: "маленький", ex: "我有一只小猫。", exPinyin: "Wǒ yǒu yì zhī xiǎo māo.", exRu: "У меня есть маленький котёнок." },
+    { hanzi: "喜欢", pinyin: "xǐhuan", tone: 3, ru: "нравиться", ex: "我喜欢中国菜。", exPinyin: "Wǒ xǐhuan Zhōngguó cài.", exRu: "Мне нравится китайская кухня." },
   ]},
   { id: 5, title: "Время и дни", words: [
-    { hanzi: "今天", pinyin: "jīntiān", tone: 1, ru: "сегодня" },
-    { hanzi: "明天", pinyin: "míngtiān", tone: 2, ru: "завтра" },
-    { hanzi: "昨天", pinyin: "zuótiān", tone: 2, ru: "вчера" },
-    { hanzi: "现在", pinyin: "xiànzài", tone: 4, ru: "сейчас" },
-    { hanzi: "时间", pinyin: "shíjiān", tone: 2, ru: "время" },
-    { hanzi: "早上", pinyin: "zǎoshang", tone: 3, ru: "утро" },
-    { hanzi: "晚上", pinyin: "wǎnshang", tone: 3, ru: "вечер" },
-    { hanzi: "星期", pinyin: "xīngqī", tone: 1, ru: "неделя" },
+    { hanzi: "今天", pinyin: "jīntiān", tone: 1, ru: "сегодня", ex: "今天天气很好。", exPinyin: "Jīntiān tiānqì hěn hǎo.", exRu: "Сегодня хорошая погода." },
+    { hanzi: "明天", pinyin: "míngtiān", tone: 2, ru: "завтра", ex: "明天我们见面吧。", exPinyin: "Míngtiān wǒmen jiànmiàn ba.", exRu: "Давай встретимся завтра." },
+    { hanzi: "昨天", pinyin: "zuótiān", tone: 2, ru: "вчера", ex: "昨天我很忙。", exPinyin: "Zuótiān wǒ hěn máng.", exRu: "Вчера я был занят." },
+    { hanzi: "现在", pinyin: "xiànzài", tone: 4, ru: "сейчас", ex: "现在几点了？", exPinyin: "Xiànzài jǐ diǎn le?", exRu: "Который сейчас час?" },
+    { hanzi: "时间", pinyin: "shíjiān", tone: 2, ru: "время", ex: "我没有时间。", exPinyin: "Wǒ méiyǒu shíjiān.", exRu: "У меня нет времени." },
+    { hanzi: "早上", pinyin: "zǎoshang", tone: 3, ru: "утро", ex: "早上好！", exPinyin: "Zǎoshang hǎo!", exRu: "Доброе утро!" },
+    { hanzi: "晚上", pinyin: "wǎnshang", tone: 3, ru: "вечер", ex: "晚上我们出去吃饭。", exPinyin: "Wǎnshang wǒmen chūqù chīfàn.", exRu: "Вечером мы пойдём поесть." },
+    { hanzi: "星期", pinyin: "xīngqī", tone: 1, ru: "неделя", ex: "这个星期很忙。", exPinyin: "Zhège xīngqī hěn máng.", exRu: "Эта неделя очень занятая." },
   ]},
   { id: 6, title: "Действия", words: [
-    { hanzi: "去", pinyin: "qù", tone: 4, ru: "идти, ехать" },
-    { hanzi: "来", pinyin: "lái", tone: 2, ru: "приходить" },
-    { hanzi: "看", pinyin: "kàn", tone: 4, ru: "смотреть" },
-    { hanzi: "说", pinyin: "shuō", tone: 1, ru: "говорить" },
-    { hanzi: "听", pinyin: "tīng", tone: 1, ru: "слушать" },
-    { hanzi: "做", pinyin: "zuò", tone: 4, ru: "делать" },
-    { hanzi: "想", pinyin: "xiǎng", tone: 3, ru: "хотеть, думать" },
-    { hanzi: "有", pinyin: "yǒu", tone: 3, ru: "иметь" },
+    { hanzi: "去", pinyin: "qù", tone: 4, ru: "идти, ехать", ex: "我要去学校。", exPinyin: "Wǒ yào qù xuéxiào.", exRu: "Я иду в школу." },
+    { hanzi: "来", pinyin: "lái", tone: 2, ru: "приходить", ex: "你什么时候来？", exPinyin: "Nǐ shénme shíhou lái?", exRu: "Когда ты придёшь?" },
+    { hanzi: "看", pinyin: "kàn", tone: 4, ru: "смотреть", ex: "我喜欢看电影。", exPinyin: "Wǒ xǐhuan kàn diànyǐng.", exRu: "Я люблю смотреть фильмы." },
+    { hanzi: "说", pinyin: "shuō", tone: 1, ru: "говорить", ex: "你会说中文吗？", exPinyin: "Nǐ huì shuō Zhōngwén ma?", exRu: "Ты говоришь по-китайски?" },
+    { hanzi: "听", pinyin: "tīng", tone: 1, ru: "слушать", ex: "我在听音乐。", exPinyin: "Wǒ zài tīng yīnyuè.", exRu: "Я слушаю музыку." },
+    { hanzi: "做", pinyin: "zuò", tone: 4, ru: "делать", ex: "你在做什么？", exPinyin: "Nǐ zài zuò shénme?", exRu: "Что ты делаешь?" },
+    { hanzi: "想", pinyin: "xiǎng", tone: 3, ru: "хотеть, думать", ex: "我想喝茶。", exPinyin: "Wǒ xiǎng hē chá.", exRu: "Я хочу выпить чаю." },
+    { hanzi: "有", pinyin: "yǒu", tone: 3, ru: "иметь", ex: "你有时间吗？", exPinyin: "Nǐ yǒu shíjiān ma?", exRu: "У тебя есть время?" },
+  ]},
+  { id: 7, title: "Место и направление", words: [
+    { hanzi: "这", pinyin: "zhè", tone: 4, ru: "это, этот", ex: "这是我的书。", exPinyin: "Zhè shì wǒ de shū.", exRu: "Это моя книга." },
+    { hanzi: "那", pinyin: "nà", tone: 4, ru: "то, тот", ex: "那是他的车。", exPinyin: "Nà shì tā de chē.", exRu: "То его машина." },
+    { hanzi: "哪", pinyin: "nǎ", tone: 3, ru: "какой, который", ex: "你要哪本书？", exPinyin: "Nǐ yào nǎ běn shū?", exRu: "Какую книгу ты хочешь?" },
+    { hanzi: "里", pinyin: "lǐ", tone: 3, ru: "внутри", ex: "书在包里。", exPinyin: "Shū zài bāo lǐ.", exRu: "Книга в сумке." },
+    { hanzi: "上", pinyin: "shàng", tone: 4, ru: "наверх, на", ex: "书在桌子上。", exPinyin: "Shū zài zhuōzi shàng.", exRu: "Книга на столе." },
+    { hanzi: "下", pinyin: "xià", tone: 4, ru: "вниз, под", ex: "猫在桌子下。", exPinyin: "Māo zài zhuōzi xià.", exRu: "Кошка под столом." },
+    { hanzi: "前面", pinyin: "qiánmiàn", tone: 2, ru: "впереди", ex: "学校在前面。", exPinyin: "Xuéxiào zài qiánmiàn.", exRu: "Школа впереди." },
+    { hanzi: "后面", pinyin: "hòumiàn", tone: 4, ru: "сзади", ex: "他在我后面。", exPinyin: "Tā zài wǒ hòumiàn.", exRu: "Он позади меня." },
+  ]},
+  { id: 8, title: "Вопросы", words: [
+    { hanzi: "什么", pinyin: "shénme", tone: 2, ru: "что", ex: "这是什么？", exPinyin: "Zhè shì shénme?", exRu: "Что это?" },
+    { hanzi: "谁", pinyin: "shéi", tone: 2, ru: "кто", ex: "他是谁？", exPinyin: "Tā shì shéi?", exRu: "Кто он?" },
+    { hanzi: "哪儿", pinyin: "nǎr", tone: 3, ru: "где", ex: "你在哪儿？", exPinyin: "Nǐ zài nǎr?", exRu: "Где ты?" },
+    { hanzi: "怎么", pinyin: "zěnme", tone: 3, ru: "как", ex: "这个怎么说？", exPinyin: "Zhège zěnme shuō?", exRu: "Как это сказать?" },
+    { hanzi: "为什么", pinyin: "wèishénme", tone: 4, ru: "почему", ex: "你为什么迟到？", exPinyin: "Nǐ wèishénme chídào?", exRu: "Почему ты опоздал?" },
+    { hanzi: "多少", pinyin: "duōshao", tone: 1, ru: "сколько", ex: "这个多少钱？", exPinyin: "Zhège duōshao qián?", exRu: "Сколько это стоит?" },
+    { hanzi: "几", pinyin: "jǐ", tone: 3, ru: "сколько (счётное)", ex: "你家有几口人？", exPinyin: "Nǐ jiā yǒu jǐ kǒu rén?", exRu: "Сколько человек в твоей семье?" },
+    { hanzi: "吗", pinyin: "ma", tone: 0, ru: "вопрос. частица", ex: "你忙吗？", exPinyin: "Nǐ máng ma?", exRu: "Ты занят?" },
+  ]},
+  { id: 9, title: "Качества", words: [
+    { hanzi: "好", pinyin: "hǎo", tone: 3, ru: "хороший", ex: "这本书很好。", exPinyin: "Zhè běn shū hěn hǎo.", exRu: "Эта книга хорошая." },
+    { hanzi: "坏", pinyin: "huài", tone: 4, ru: "плохой", ex: "这个消息很坏。", exPinyin: "Zhège xiāoxi hěn huài.", exRu: "Эта новость плохая." },
+    { hanzi: "高", pinyin: "gāo", tone: 1, ru: "высокий", ex: "他很高。", exPinyin: "Tā hěn gāo.", exRu: "Он высокий." },
+    { hanzi: "矮", pinyin: "ǎi", tone: 3, ru: "низкий (рост)", ex: "这张桌子很矮。", exPinyin: "Zhè zhāng zhuōzi hěn ǎi.", exRu: "Этот стол низкий." },
+    { hanzi: "长", pinyin: "cháng", tone: 2, ru: "длинный", ex: "她的头发很长。", exPinyin: "Tā de tóufa hěn cháng.", exRu: "У неё длинные волосы." },
+    { hanzi: "短", pinyin: "duǎn", tone: 3, ru: "короткий", ex: "这条路很短。", exPinyin: "Zhè tiáo lù hěn duǎn.", exRu: "Эта дорога короткая." },
+    { hanzi: "新", pinyin: "xīn", tone: 1, ru: "новый", ex: "我买了新手机。", exPinyin: "Wǒ mǎile xīn shǒujī.", exRu: "Я купил новый телефон." },
+    { hanzi: "旧", pinyin: "jiù", tone: 4, ru: "старый (вещь)", ex: "这是旧照片。", exPinyin: "Zhè shì jiù zhàopiàn.", exRu: "Это старая фотография." },
+  ]},
+  { id: 10, title: "Природа и цвета", words: [
+    { hanzi: "红色", pinyin: "hóngsè", tone: 2, ru: "красный", ex: "我喜欢红色。", exPinyin: "Wǒ xǐhuan hóngsè.", exRu: "Мне нравится красный цвет." },
+    { hanzi: "白色", pinyin: "báisè", tone: 2, ru: "белый", ex: "她穿白色衣服。", exPinyin: "Tā chuān báisè yīfu.", exRu: "Она носит белую одежду." },
+    { hanzi: "黑色", pinyin: "hēisè", tone: 1, ru: "чёрный", ex: "他有一只黑猫。", exPinyin: "Tā yǒu yì zhī hēi māo.", exRu: "У него есть чёрная кошка." },
+    { hanzi: "天", pinyin: "tiān", tone: 1, ru: "небо, день", ex: "天很蓝。", exPinyin: "Tiān hěn lán.", exRu: "Небо очень синее." },
+    { hanzi: "山", pinyin: "shān", tone: 1, ru: "гора", ex: "这座山很高。", exPinyin: "Zhè zuò shān hěn gāo.", exRu: "Эта гора очень высокая." },
+    { hanzi: "树", pinyin: "shù", tone: 4, ru: "дерево", ex: "公园里有很多树。", exPinyin: "Gōngyuán lǐ yǒu hěn duō shù.", exRu: "В парке много деревьев." },
+    { hanzi: "花", pinyin: "huā", tone: 1, ru: "цветок", ex: "她喜欢花。", exPinyin: "Tā xǐhuan huā.", exRu: "Она любит цветы." },
+    { hanzi: "月亮", pinyin: "yuèliang", tone: 4, ru: "луна", ex: "今晚月亮很亮。", exPinyin: "Jīnwǎn yuèliang hěn liàng.", exRu: "Сегодня вечером луна очень яркая." },
   ]},
 ];
 
 const ALL_WORDS = LESSONS.flatMap(l => l.words);
-const TONE_LABEL = { 1: "1-й, ровный", 2: "2-й, восходящий", 3: "3-й, падающе-восходящий", 4: "4-й, падающий" };
+const TONE_LABEL = { 0: "нейтральный", 1: "1-й, ровный", 2: "2-й, восходящий", 3: "3-й, падающе-восходящий", 4: "4-й, падающий" };
 const TONE_PATH = {
+  0: "M2 11 H20",
   1: "M2 11 H20",
   2: "M2 17 Q11 3 20 3",
   3: "M2 6 Q7 20 11 11 Q15 3 20 17",
@@ -265,6 +321,9 @@ function renderLearn() {
   document.getElementById("fCharFront").textContent = w.hanzi;
   document.getElementById("fPinyin").textContent = w.pinyin;
   document.getElementById("fRu").textContent = w.ru;
+  document.getElementById("fExHanzi").textContent = w.ex || "";
+  document.getElementById("fExPinyin").textContent = w.exPinyin || "";
+  document.getElementById("fExRu").textContent = w.exRu || "";
   document.getElementById("toneLabel").textContent = TONE_LABEL[w.tone];
   document.getElementById("toneSvg").innerHTML =
     '<path d="' + (TONE_PATH[w.tone] || TONE_PATH[1]) + '" stroke="#A6332B" stroke-width="2.4" stroke-linecap="round"/>';
