@@ -179,6 +179,7 @@
   </div>
 
   <div id="grammarView" style="display:none;">
+    <nav id="gLevelNav" style="margin-bottom:16px;"></nav>
     <div id="gList" class="g-list"></div>
     <div id="gDetail" style="display:none;">
       <button class="g-back" id="gBackBtn">← Все темы</button>
@@ -306,9 +307,109 @@ const LESSONS = [
     { hanzi: "花", pinyin: "huā", tone: 1, ru: "цветок", ex: "她喜欢花。", exPinyin: "Tā xǐhuan huā.", exRu: "Она любит цветы." },
     { hanzi: "月亮", pinyin: "yuèliang", tone: 4, ru: "луна", ex: "今晚月亮很亮。", exPinyin: "Jīnwǎn yuèliang hěn liàng.", exRu: "Сегодня вечером луна очень яркая." },
   ]},
+  { id: 11, title: "Одежда и покупки", words: [
+    { hanzi: "衣服", pinyin: "yīfu", tone: 2, ru: "одежда", ex: "我买了新衣服。", exPinyin: "Wǒ mǎile xīn yīfu.", exRu: "Я купил новую одежду." },
+    { hanzi: "裤子", pinyin: "kùzi", tone: 4, ru: "брюки", ex: "这条裤子太长了。", exPinyin: "Zhè tiáo kùzi tài cháng le.", exRu: "Эти брюки слишком длинные." },
+    { hanzi: "鞋", pinyin: "xié", tone: 2, ru: "обувь", ex: "我的鞋很旧了。", exPinyin: "Wǒ de xié hěn jiù le.", exRu: "Моя обувь уже старая." },
+    { hanzi: "买", pinyin: "mǎi", tone: 3, ru: "покупать", ex: "我想买一本书。", exPinyin: "Wǒ xiǎng mǎi yì běn shū.", exRu: "Я хочу купить книгу." },
+    { hanzi: "卖", pinyin: "mài", tone: 4, ru: "продавать", ex: "这里卖水果。", exPinyin: "Zhèlǐ mài shuǐguǒ.", exRu: "Здесь продают фрукты." },
+    { hanzi: "钱", pinyin: "qián", tone: 2, ru: "деньги", ex: "我没有钱。", exPinyin: "Wǒ méiyǒu qián.", exRu: "У меня нет денег." },
+    { hanzi: "便宜", pinyin: "piányi", tone: 2, ru: "дешёвый", ex: "这个很便宜。", exPinyin: "Zhège hěn piányi.", exRu: "Это дёшево." },
+    { hanzi: "贵", pinyin: "guì", tone: 4, ru: "дорогой", ex: "那个太贵了。", exPinyin: "Nàge tài guì le.", exRu: "То слишком дорого." },
+  ]},
+  { id: 12, title: "Транспорт", words: [
+    { hanzi: "车", pinyin: "chē", tone: 1, ru: "машина", ex: "我坐车去公司。", exPinyin: "Wǒ zuò chē qù gōngsī.", exRu: "Я еду на машине на работу." },
+    { hanzi: "飞机", pinyin: "fēijī", tone: 1, ru: "самолёт", ex: "我坐飞机去北京。", exPinyin: "Wǒ zuò fēijī qù Běijīng.", exRu: "Я лечу в Пекин на самолёте." },
+    { hanzi: "火车", pinyin: "huǒchē", tone: 3, ru: "поезд", ex: "火车八点开。", exPinyin: "Huǒchē bā diǎn kāi.", exRu: "Поезд отправляется в восемь." },
+    { hanzi: "公共汽车", pinyin: "gōnggòngqìchē", tone: 1, ru: "автобус", ex: "我坐公共汽车上班。", exPinyin: "Wǒ zuò gōnggòngqìchē shàngbān.", exRu: "Я езжу на работу на автобусе." },
+    { hanzi: "出租车", pinyin: "chūzūchē", tone: 1, ru: "такси", ex: "我们打出租车吧。", exPinyin: "Wǒmen dǎ chūzūchē ba.", exRu: "Давай возьмём такси." },
+    { hanzi: "走", pinyin: "zǒu", tone: 3, ru: "идти пешком", ex: "我们走着去吧。", exPinyin: "Wǒmen zǒuzhe qù ba.", exRu: "Давай пойдём пешком." },
+    { hanzi: "骑", pinyin: "qí", tone: 2, ru: "ехать (на велосипеде)", ex: "他骑自行车上班。", exPinyin: "Tā qí zìxíngchē shàngbān.", exRu: "Он ездит на велосипеде на работу." },
+    { hanzi: "坐", pinyin: "zuò", tone: 4, ru: "сидеть, ехать", ex: "请坐。", exPinyin: "Qǐng zuò.", exRu: "Присаживайтесь." },
+  ]},
+  { id: 13, title: "Работа и учёба", words: [
+    { hanzi: "工作", pinyin: "gōngzuò", tone: 1, ru: "работа", ex: "我的工作很忙。", exPinyin: "Wǒ de gōngzuò hěn máng.", exRu: "Моя работа очень напряжённая." },
+    { hanzi: "公司", pinyin: "gōngsī", tone: 1, ru: "компания", ex: "我在公司工作。", exPinyin: "Wǒ zài gōngsī gōngzuò.", exRu: "Я работаю в компании." },
+    { hanzi: "老板", pinyin: "lǎobǎn", tone: 3, ru: "начальник", ex: "老板不在。", exPinyin: "Lǎobǎn bú zài.", exRu: "Начальника нет на месте." },
+    { hanzi: "同事", pinyin: "tóngshì", tone: 2, ru: "коллега", ex: "他是我的同事。", exPinyin: "Tā shì wǒ de tóngshì.", exRu: "Он мой коллега." },
+    { hanzi: "忙", pinyin: "máng", tone: 2, ru: "занятый", ex: "我今天很忙。", exPinyin: "Wǒ jīntiān hěn máng.", exRu: "Я сегодня очень занят." },
+    { hanzi: "休息", pinyin: "xiūxi", tone: 1, ru: "отдыхать", ex: "我们休息一下吧。", exPinyin: "Wǒmen xiūxi yíxià ba.", exRu: "Давай немного отдохнём." },
+    { hanzi: "开始", pinyin: "kāishǐ", tone: 1, ru: "начинать", ex: "电影开始了。", exPinyin: "Diànyǐng kāishǐ le.", exRu: "Фильм начался." },
+    { hanzi: "结束", pinyin: "jiéshù", tone: 2, ru: "заканчивать", ex: "会议结束了。", exPinyin: "Huìyì jiéshù le.", exRu: "Встреча закончилась." },
+  ]},
+  { id: 14, title: "Тело и здоровье", words: [
+    { hanzi: "身体", pinyin: "shēntǐ", tone: 1, ru: "тело, здоровье", ex: "你身体好吗？", exPinyin: "Nǐ shēntǐ hǎo ma?", exRu: "Как твоё здоровье?" },
+    { hanzi: "头", pinyin: "tóu", tone: 2, ru: "голова", ex: "我头疼。", exPinyin: "Wǒ tóu téng.", exRu: "У меня болит голова." },
+    { hanzi: "眼睛", pinyin: "yǎnjing", tone: 3, ru: "глаза", ex: "她的眼睛很大。", exPinyin: "Tā de yǎnjing hěn dà.", exRu: "У неё большие глаза." },
+    { hanzi: "手", pinyin: "shǒu", tone: 3, ru: "рука", ex: "请举手。", exPinyin: "Qǐng jǔshǒu.", exRu: "Поднимите руку, пожалуйста." },
+    { hanzi: "脚", pinyin: "jiǎo", tone: 3, ru: "нога, стопа", ex: "我的脚很累。", exPinyin: "Wǒ de jiǎo hěn lèi.", exRu: "Мои ноги устали." },
+    { hanzi: "生病", pinyin: "shēngbìng", tone: 1, ru: "заболеть", ex: "他生病了。", exPinyin: "Tā shēngbìng le.", exRu: "Он заболел." },
+    { hanzi: "累", pinyin: "lèi", tone: 4, ru: "уставший", ex: "我很累。", exPinyin: "Wǒ hěn lèi.", exRu: "Я очень устал." },
+    { hanzi: "舒服", pinyin: "shūfu", tone: 1, ru: "комфортно", ex: "我今天不舒服。", exPinyin: "Wǒ jīntiān bù shūfu.", exRu: "Мне сегодня нехорошо." },
+  ]},
+  { id: 15, title: "Эмоции", words: [
+    { hanzi: "高兴", pinyin: "gāoxìng", tone: 1, ru: "радостный", ex: "认识你很高兴。", exPinyin: "Rènshi nǐ hěn gāoxìng.", exRu: "Рад познакомиться." },
+    { hanzi: "难过", pinyin: "nánguò", tone: 2, ru: "грустный", ex: "她很难过。", exPinyin: "Tā hěn nánguò.", exRu: "Она очень расстроена." },
+    { hanzi: "害怕", pinyin: "hàipà", tone: 4, ru: "бояться", ex: "我害怕狗。", exPinyin: "Wǒ hàipà gǒu.", exRu: "Я боюсь собак." },
+    { hanzi: "担心", pinyin: "dānxīn", tone: 1, ru: "волноваться", ex: "别担心。", exPinyin: "Bié dānxīn.", exRu: "Не волнуйся." },
+    { hanzi: "生气", pinyin: "shēngqì", tone: 1, ru: "злиться", ex: "他生气了。", exPinyin: "Tā shēngqì le.", exRu: "Он разозлился." },
+    { hanzi: "笑", pinyin: "xiào", tone: 4, ru: "смеяться", ex: "她笑了。", exPinyin: "Tā xiào le.", exRu: "Она засмеялась." },
+    { hanzi: "哭", pinyin: "kū", tone: 1, ru: "плакать", ex: "孩子哭了。", exPinyin: "Háizi kū le.", exRu: "Ребёнок заплакал." },
+    { hanzi: "爱", pinyin: "ài", tone: 4, ru: "любить", ex: "我爱我的家人。", exPinyin: "Wǒ ài wǒ de jiārén.", exRu: "Я люблю свою семью." },
+  ]},
+  { id: 16, title: "Погода", words: [
+    { hanzi: "天气", pinyin: "tiānqì", tone: 1, ru: "погода", ex: "今天天气怎么样？", exPinyin: "Jīntiān tiānqì zěnmeyàng?", exRu: "Какая сегодня погода?" },
+    { hanzi: "晴", pinyin: "qíng", tone: 2, ru: "ясный", ex: "今天很晴。", exPinyin: "Jīntiān hěn qíng.", exRu: "Сегодня ясно." },
+    { hanzi: "阴", pinyin: "yīn", tone: 1, ru: "пасмурный", ex: "今天天气很阴。", exPinyin: "Jīntiān tiānqì hěn yīn.", exRu: "Сегодня пасмурно." },
+    { hanzi: "下雨", pinyin: "xiàyǔ", tone: 4, ru: "идёт дождь", ex: "外面下雨了。", exPinyin: "Wàimiàn xiàyǔ le.", exRu: "На улице идёт дождь." },
+    { hanzi: "下雪", pinyin: "xiàxuě", tone: 4, ru: "идёт снег", ex: "冬天下雪。", exPinyin: "Dōngtiān xiàxuě.", exRu: "Зимой идёт снег." },
+    { hanzi: "热", pinyin: "rè", tone: 4, ru: "жарко", ex: "今天很热。", exPinyin: "Jīntiān hěn rè.", exRu: "Сегодня жарко." },
+    { hanzi: "冷", pinyin: "lěng", tone: 3, ru: "холодно", ex: "外面很冷。", exPinyin: "Wàimiàn hěn lěng.", exRu: "На улице холодно." },
+    { hanzi: "风", pinyin: "fēng", tone: 1, ru: "ветер", ex: "今天风很大。", exPinyin: "Jīntiān fēng hěn dà.", exRu: "Сегодня сильный ветер." },
+  ]},
+  { id: 17, title: "Дом и мебель", words: [
+    { hanzi: "房子", pinyin: "fángzi", tone: 2, ru: "дом", ex: "这个房子很大。", exPinyin: "Zhège fángzi hěn dà.", exRu: "Этот дом большой." },
+    { hanzi: "房间", pinyin: "fángjiān", tone: 2, ru: "комната", ex: "我的房间很小。", exPinyin: "Wǒ de fángjiān hěn xiǎo.", exRu: "Моя комната маленькая." },
+    { hanzi: "门", pinyin: "mén", tone: 2, ru: "дверь", ex: "请关门。", exPinyin: "Qǐng guān mén.", exRu: "Закройте дверь, пожалуйста." },
+    { hanzi: "窗户", pinyin: "chuānghu", tone: 1, ru: "окно", ex: "请打开窗户。", exPinyin: "Qǐng dǎkāi chuānghu.", exRu: "Откройте окно, пожалуйста." },
+    { hanzi: "桌子", pinyin: "zhuōzi", tone: 1, ru: "стол", ex: "书在桌子上。", exPinyin: "Shū zài zhuōzi shàng.", exRu: "Книга на столе." },
+    { hanzi: "椅子", pinyin: "yǐzi", tone: 3, ru: "стул", ex: "请坐这把椅子。", exPinyin: "Qǐng zuò zhè bǎ yǐzi.", exRu: "Садитесь на этот стул." },
+    { hanzi: "床", pinyin: "chuáng", tone: 2, ru: "кровать", ex: "猫在床上。", exPinyin: "Māo zài chuáng shàng.", exRu: "Кошка на кровати." },
+    { hanzi: "电视", pinyin: "diànshì", tone: 4, ru: "телевизор", ex: "我在看电视。", exPinyin: "Wǒ zài kàn diànshì.", exRu: "Я смотрю телевизор." },
+  ]},
+  { id: 18, title: "Город и места", words: [
+    { hanzi: "学校", pinyin: "xuéxiào", tone: 2, ru: "школа", ex: "我在学校学习。", exPinyin: "Wǒ zài xuéxiào xuéxí.", exRu: "Я учусь в школе." },
+    { hanzi: "医院", pinyin: "yīyuàn", tone: 1, ru: "больница", ex: "医院在哪儿？", exPinyin: "Yīyuàn zài nǎr?", exRu: "Где находится больница?" },
+    { hanzi: "商店", pinyin: "shāngdiàn", tone: 1, ru: "магазин", ex: "商店几点开门？", exPinyin: "Shāngdiàn jǐ diǎn kāimén?", exRu: "Во сколько открывается магазин?" },
+    { hanzi: "银行", pinyin: "yínháng", tone: 2, ru: "банк", ex: "银行在前面。", exPinyin: "Yínháng zài qiánmiàn.", exRu: "Банк впереди." },
+    { hanzi: "公园", pinyin: "gōngyuán", tone: 1, ru: "парк", ex: "我们去公园吧。", exPinyin: "Wǒmen qù gōngyuán ba.", exRu: "Пойдём в парк." },
+    { hanzi: "机场", pinyin: "jīchǎng", tone: 1, ru: "аэропорт", ex: "机场很远。", exPinyin: "Jīchǎng hěn yuǎn.", exRu: "Аэропорт далеко." },
+    { hanzi: "饭馆", pinyin: "fànguǎn", tone: 4, ru: "ресторан", ex: "这家饭馆很好。", exPinyin: "Zhè jiā fànguǎn hěn hǎo.", exRu: "Этот ресторан хороший." },
+    { hanzi: "超市", pinyin: "chāoshì", tone: 1, ru: "супермаркет", ex: "我去超市买菜。", exPinyin: "Wǒ qù chāoshì mǎi cài.", exRu: "Я иду в супермаркет за продуктами." },
+  ]},
+  { id: 19, title: "Глаголы связи", words: [
+    { hanzi: "打电话", pinyin: "dǎdiànhuà", tone: 3, ru: "звонить", ex: "我给你打电话。", exPinyin: "Wǒ gěi nǐ dǎ diànhuà.", exRu: "Я тебе позвоню." },
+    { hanzi: "发", pinyin: "fā", tone: 1, ru: "отправлять", ex: "我发了一条消息。", exPinyin: "Wǒ fāle yì tiáo xiāoxi.", exRu: "Я отправил сообщение." },
+    { hanzi: "给", pinyin: "gěi", tone: 3, ru: "давать", ex: "请给我一杯水。", exPinyin: "Qǐng gěi wǒ yì bēi shuǐ.", exRu: "Дайте мне стакан воды." },
+    { hanzi: "帮助", pinyin: "bāngzhù", tone: 1, ru: "помогать", ex: "谢谢你的帮助。", exPinyin: "Xièxie nǐ de bāngzhù.", exRu: "Спасибо за помощь." },
+    { hanzi: "等", pinyin: "děng", tone: 3, ru: "ждать", ex: "请等一下。", exPinyin: "Qǐng děng yíxià.", exRu: "Подождите, пожалуйста." },
+    { hanzi: "找", pinyin: "zhǎo", tone: 3, ru: "искать", ex: "你在找什么？", exPinyin: "Nǐ zài zhǎo shénme?", exRu: "Что ты ищешь?" },
+    { hanzi: "知道", pinyin: "zhīdào", tone: 1, ru: "знать", ex: "我不知道。", exPinyin: "Wǒ bù zhīdào.", exRu: "Я не знаю." },
+    { hanzi: "记得", pinyin: "jìde", tone: 4, ru: "помнить", ex: "我记得他。", exPinyin: "Wǒ jìde tā.", exRu: "Я его помню." },
+  ]},
+  { id: 20, title: "Связки и союзы", words: [
+    { hanzi: "因为", pinyin: "yīnwèi", tone: 1, ru: "потому что", ex: "因为下雨，我没去。", exPinyin: "Yīnwèi xiàyǔ, wǒ méi qù.", exRu: "Я не пошёл, потому что шёл дождь." },
+    { hanzi: "所以", pinyin: "suǒyǐ", tone: 3, ru: "поэтому", ex: "我很累，所以我休息。", exPinyin: "Wǒ hěn lèi, suǒyǐ wǒ xiūxi.", exRu: "Я устал, поэтому отдыхаю." },
+    { hanzi: "但是", pinyin: "dànshì", tone: 4, ru: "но", ex: "我想去，但是我很忙。", exPinyin: "Wǒ xiǎng qù, dànshì wǒ hěn máng.", exRu: "Я хочу пойти, но я занят." },
+    { hanzi: "可是", pinyin: "kěshì", tone: 3, ru: "но, однако", ex: "他很好，可是很忙。", exPinyin: "Tā hěn hǎo, kěshì hěn máng.", exRu: "Он хороший, но занятой." },
+    { hanzi: "还是", pinyin: "háishi", tone: 2, ru: "или (в вопросе)", ex: "你要茶还是水？", exPinyin: "Nǐ yào chá háishi shuǐ?", exRu: "Ты хочешь чай или воду?" },
+    { hanzi: "或者", pinyin: "huòzhě", tone: 4, ru: "или", ex: "你可以写或者说。", exPinyin: "Nǐ kěyǐ xiě huòzhě shuō.", exRu: "Ты можешь написать или сказать." },
+    { hanzi: "如果", pinyin: "rúguǒ", tone: 2, ru: "если", ex: "如果下雨，我们就不去。", exPinyin: "Rúguǒ xiàyǔ, wǒmen jiù bú qù.", exRu: "Если пойдёт дождь, мы не пойдём." },
+    { hanzi: "就", pinyin: "jiù", tone: 4, ru: "тогда, сразу", ex: "我们现在就走。", exPinyin: "Wǒmen xiànzài jiù zǒu.", exRu: "Мы уходим прямо сейчас." },
+  ]},
 ];
 
-const GRAMMAR = [
+const GRAMMAR_BASIC = [
   { id: 1, title: "是 — глагол-связка «быть»",
     explain: "是 связывает подлежащее с существительным и отвечает на вопрос «кто/что это». В отличие от русского «есть», 是 не пропускается и не меняется по лицам.",
     formula: "Подлежащее + 是 + существительное",
@@ -448,6 +549,133 @@ const GRAMMAR = [
       { hanzi: "我们晚上在饭馆吃饭。", pinyin: "Wǒmen wǎnshang zài fànguǎn chīfàn.", ru: "Мы вечером едим в ресторане." },
     ],
     practice: { q: "Какой порядок верный?", opts: ["我在家今天学习。", "我今天在家学习。", "我学习今天在家。"], correct: 1 } },
+];
+
+const GRAMMAR_ADVANCED = [
+  { id: 1, title: "比 — сравнение",
+    explain: "比 используется для прямого сравнения двух предметов или людей по какому-то качеству.",
+    formula: "A + 比 + B + прилагательное",
+    examples: [
+      { hanzi: "我比他高。", pinyin: "Wǒ bǐ tā gāo.", ru: "Я выше него." },
+      { hanzi: "今天比昨天冷。", pinyin: "Jīntiān bǐ zuótiān lěng.", ru: "Сегодня холоднее, чем вчера." },
+      { hanzi: "这个比那个贵。", pinyin: "Zhège bǐ nàge guì.", ru: "Это дороже, чем то." },
+    ],
+    practice: { q: "«Я выше тебя» — как правильно?", opts: ["我比你高。", "我高比你。", "我你比高。"], correct: 0 } },
+
+  { id: 2, title: "过 — опыт действия в прошлом",
+    explain: "过 после глагола показывает, что действие когда-либо совершалось — это «опыт», а не привязка к конкретному моменту времени.",
+    formula: "глагол + 过",
+    examples: [
+      { hanzi: "我去过北京。", pinyin: "Wǒ qùguo Běijīng.", ru: "Я бывал в Пекине." },
+      { hanzi: "你吃过中国菜吗？", pinyin: "Nǐ chīguo Zhōngguó cài ma?", ru: "Ты пробовал китайскую еду?" },
+      { hanzi: "我没看过这部电影。", pinyin: "Wǒ méi kànguo zhè bù diànyǐng.", ru: "Я не смотрел этот фильм." },
+    ],
+    practice: { q: "Как показать «опыт», а не просто прошлое время?", opts: ["глагол + 了", "глагол + 过", "глагол + 吗"], correct: 1 } },
+
+  { id: 3, title: "正在...呢 — действие в процессе",
+    explain: "正在 перед глаголом (часто вместе с 呢 в конце фразы) подчёркивает, что действие происходит именно сейчас, в этот момент.",
+    formula: "正在 + глагол (+ 呢)",
+    examples: [
+      { hanzi: "我正在吃饭呢。", pinyin: "Wǒ zhèngzài chīfàn ne.", ru: "Я как раз ем." },
+      { hanzi: "他正在睡觉。", pinyin: "Tā zhèngzài shuìjiào.", ru: "Он сейчас спит." },
+      { hanzi: "你正在做什么呢？", pinyin: "Nǐ zhèngzài zuò shénme ne?", ru: "Что ты сейчас делаешь?" },
+    ],
+    practice: { q: "Какое слово подчёркивает «прямо сейчас»?", opts: ["正在", "了", "过"], correct: 0 } },
+
+  { id: 4, title: "因为...所以... / 虽然...但是...",
+    explain: "因为...所以... связывает причину и следствие («потому что..., поэтому...»). 虽然...但是... выражает уступку («хотя..., но...»).",
+    formula: "因为 A，所以 B  /  虽然 A，但是 B",
+    examples: [
+      { hanzi: "因为很晚了，所以我要回家。", pinyin: "Yīnwèi hěn wǎn le, suǒyǐ wǒ yào huí jiā.", ru: "Уже поздно, поэтому мне пора домой." },
+      { hanzi: "虽然很累，但是我很高兴。", pinyin: "Suīrán hěn lèi, dànshì wǒ hěn gāoxìng.", ru: "Хотя я устал, но я рад." },
+      { hanzi: "因为下雨，所以我们没出去。", pinyin: "Yīnwèi xiàyǔ, wǒmen méi chūqù.", ru: "Мы не вышли, потому что шёл дождь." },
+    ],
+    practice: { q: "Какая пара выражает уступку «хотя..., но...»?", opts: ["因为...所以...", "虽然...但是...", "如果...就..."], correct: 1 } },
+
+  { id: 5, title: "得 — комплемент степени действия",
+    explain: "После глагола ставится 得, а за ним — описание того, КАК было совершено действие (быстро, хорошо, медленно и т.д.).",
+    formula: "глагол + 得 + прилагательное/наречие",
+    examples: [
+      { hanzi: "他说得很好。", pinyin: "Tā shuō de hěn hǎo.", ru: "Он хорошо говорит." },
+      { hanzi: "你写得很快。", pinyin: "Nǐ xiě de hěn kuài.", ru: "Ты пишешь быстро." },
+      { hanzi: "她跑得很慢。", pinyin: "Tā pǎo de hěn màn.", ru: "Она бегает медленно." },
+    ],
+    practice: { q: "Что ставится между глаголом и описанием «как»?", opts: ["了", "得", "过"], correct: 1 } },
+
+  { id: 6, title: "一点儿 / 有点儿 — немного",
+    explain: "一点儿 стоит после прилагательного (часто в просьбе или сравнении). 有点儿 стоит перед прилагательным, часто с оттенком «увы, слишком».",
+    formula: "прилагательное + 一点儿  /  有点儿 + прилагательное",
+    examples: [
+      { hanzi: "便宜一点儿吧。", pinyin: "Piányi yìdiǎnr ba.", ru: "Сделайте немного дешевле." },
+      { hanzi: "这个有点儿贵。", pinyin: "Zhège yǒudiǎnr guì.", ru: "Это немного дороговато." },
+      { hanzi: "我有点儿累。", pinyin: "Wǒ yǒudiǎnr lèi.", ru: "Я немного устал." },
+    ],
+    practice: { q: "Какое слово стоит ПЕРЕД прилагательным?", opts: ["一点儿", "有点儿", "得"], correct: 1 } },
+
+  { id: 7, title: "快...了 / 就要...了 — скоро произойдёт",
+    explain: "Конструкция показывает, что действие вот-вот случится, в ближайшем будущем.",
+    formula: "快 + глагол + 了  /  就要 + глагол + 了",
+    examples: [
+      { hanzi: "电影快开始了。", pinyin: "Diànyǐng kuài kāishǐ le.", ru: "Фильм вот-вот начнётся." },
+      { hanzi: "我们就要到了。", pinyin: "Wǒmen jiùyào dào le.", ru: "Мы почти приехали." },
+      { hanzi: "他快回来了。", pinyin: "Tā kuài huílái le.", ru: "Он скоро вернётся." },
+    ],
+    practice: { q: "Какая конструкция значит «вот-вот случится»?", opts: ["快...了", "在...呢", "又...又"], correct: 0 } },
+
+  { id: 8, title: "除了...以外 — кроме",
+    explain: "Указывает на исключение или добавление — «кроме..., ещё...».",
+    formula: "除了 A 以外, (还) B",
+    examples: [
+      { hanzi: "除了咖啡以外，我还喜欢茶。", pinyin: "Chúle kāfēi yǐwài, wǒ hái xǐhuan chá.", ru: "Кроме кофе, мне ещё нравится чай." },
+      { hanzi: "除了他以外，大家都来了。", pinyin: "Chúle tā yǐwài, dàjiā dōu lái le.", ru: "Кроме него, все пришли." },
+      { hanzi: "除了周末以外，我每天都上班。", pinyin: "Chúle zhōumò yǐwài, wǒ měitiān dōu shàngbān.", ru: "Кроме выходных, я работаю каждый день." },
+    ],
+    practice: { q: "Что значит 除了...以外？", opts: ["и... и...", "кроме...", "потому что..."], correct: 1 } },
+
+  { id: 9, title: "又...又... — и то, и это",
+    explain: "Показывает два качества или действия одновременно — «и... и...».",
+    formula: "又 + прилагательное/глагол + 又 + прилагательное/глагол",
+    examples: [
+      { hanzi: "这个又便宜又好。", pinyin: "Zhège yòu piányi yòu hǎo.", ru: "Это и дешёвое, и хорошее." },
+      { hanzi: "她又聪明又漂亮。", pinyin: "Tā yòu cōngming yòu piàoliang.", ru: "Она и умная, и красивая." },
+      { hanzi: "他又哭又笑。", pinyin: "Tā yòu kū yòu xiào.", ru: "Он и плачет, и смеётся." },
+    ],
+    practice: { q: "«И дешёвое, и хорошее» — как сказать?", opts: ["又便宜又好", "很便宜很好", "便宜和好"], correct: 0 } },
+
+  { id: 10, title: "先...然后... — сначала..., потом...",
+    explain: "Показывает последовательность действий во времени.",
+    formula: "先 + действие 1，然后 + действие 2",
+    examples: [
+      { hanzi: "我先吃饭，然后睡觉。", pinyin: "Wǒ xiān chīfàn, ránhòu shuìjiào.", ru: "Сначала я поем, потом лягу спать." },
+      { hanzi: "先做作业，然后看电视。", pinyin: "Xiān zuò zuòyè, ránhòu kàn diànshì.", ru: "Сначала сделай уроки, потом смотри телевизор." },
+      { hanzi: "我们先去银行，然后去商店。", pinyin: "Wǒmen xiān qù yínháng, ránhòu qù shāngdiàn.", ru: "Сначала пойдём в банк, потом в магазин." },
+    ],
+    practice: { q: "Какое слово значит «сначала»?", opts: ["先", "然后", "就"], correct: 0 } },
+
+  { id: 11, title: "越来越... — всё больше и больше",
+    explain: "Показывает нарастающее изменение качества со временем — «всё более...».",
+    formula: "越来越 + прилагательное/глагол",
+    examples: [
+      { hanzi: "天气越来越冷了。", pinyin: "Tiānqì yuè lái yuè lěng le.", ru: "Погода становится всё холоднее." },
+      { hanzi: "他的中文越来越好。", pinyin: "Tā de Zhōngwén yuè lái yuè hǎo.", ru: "Его китайский становится всё лучше." },
+      { hanzi: "这个城市越来越大。", pinyin: "Zhège chéngshì yuè lái yuè dà.", ru: "Этот город становится всё больше." },
+    ],
+    practice: { q: "«Всё более...» — какая конструкция?", opts: ["越来越", "又...又", "先...然后"], correct: 0 } },
+
+  { id: 12, title: "把 — распоряжение объектом (базовый вариант)",
+    explain: "把 выносит объект перед глаголом, когда важно подчеркнуть, ЧТО именно сделали с этим конкретным объектом — обычно с результатом действия.",
+    formula: "подлежащее + 把 + объект + глагол + результат",
+    examples: [
+      { hanzi: "请把门关上。", pinyin: "Qǐng bǎ mén guānshàng.", ru: "Закройте, пожалуйста, дверь." },
+      { hanzi: "我把作业做完了。", pinyin: "Wǒ bǎ zuòyè zuòwán le.", ru: "Я закончил домашнюю работу." },
+      { hanzi: "他把书放在桌子上。", pinyin: "Tā bǎ shū fàng zài zhuōzi shàng.", ru: "Он положил книгу на стол." },
+    ],
+    practice: { q: "把 ставится...", opts: ["перед объектом, до глагола", "после глагола", "в конце предложения"], correct: 0 } },
+];
+
+const GRAMMAR_LEVELS = [
+  { id: "basic", label: "Базовый · HSK1", topics: GRAMMAR_BASIC },
+  { id: "advanced", label: "Продвинутый · HSK2", topics: GRAMMAR_ADVANCED },
 ];
 
 const ALL_WORDS = LESSONS.flatMap(l => l.words);
@@ -630,12 +858,36 @@ function setActiveModeBtn(id) {
   document.getElementById(id).classList.add("active");
 }
 
+let grammarLevel = "basic";
+
+function renderGLevelNav() {
+  const nav = document.getElementById("gLevelNav");
+  nav.innerHTML = "";
+  nav.style.display = "flex";
+  nav.style.gap = "8px";
+  GRAMMAR_LEVELS.forEach(lvl => {
+    const b = document.createElement("button");
+    b.textContent = lvl.label;
+    b.style.cssText = "font-family:'Inter',sans-serif;font-size:12px;padding:7px 14px;border-radius:999px;white-space:nowrap;border:1px solid #4A4A52;background:transparent;color:#B8B3A5;";
+    if (lvl.id === grammarLevel) {
+      b.style.background = "#A6332B"; b.style.borderColor = "#A6332B"; b.style.color = "#E8E1CF";
+    }
+    b.onclick = () => { grammarLevel = lvl.id; showGrammarList(); };
+    nav.appendChild(b);
+  });
+}
+
+function currentGrammarTopics() {
+  return GRAMMAR_LEVELS.find(l => l.id === grammarLevel).topics;
+}
+
 function showGrammarList() {
+  renderGLevelNav();
   document.getElementById("gList").style.display = "flex";
   document.getElementById("gDetail").style.display = "none";
   const list = document.getElementById("gList");
   list.innerHTML = "";
-  GRAMMAR.forEach(g => {
+  currentGrammarTopics().forEach(g => {
     const btn = document.createElement("button");
     btn.className = "g-item";
     btn.innerHTML = '<span class="g-num hanzi">' + String(g.id).padStart(2, "0") + '</span><span class="g-title">' + g.title + '</span>';
@@ -645,7 +897,8 @@ function showGrammarList() {
 }
 
 function showGrammarDetail(id) {
-  const g = GRAMMAR.find(x => x.id === id);
+  const g = currentGrammarTopics().find(x => x.id === id);
+  document.getElementById("gLevelNav").style.display = "none";
   document.getElementById("gList").style.display = "none";
   document.getElementById("gDetail").style.display = "block";
   document.getElementById("gTitle").textContent = g.title;
