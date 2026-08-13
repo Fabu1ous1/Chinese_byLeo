@@ -39,6 +39,28 @@
   }
   nav button.active { background: #A6332B; border-color: #A6332B; color: #E8E1CF; }
 
+  .lesson-select-wrap { position: relative; margin-bottom: 20px; }
+  .lesson-select-btn {
+    width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    padding: 12px 16px; border-radius: 10px; border: 1px solid #4A4A52; background: #232328;
+    color: #E8E1CF; font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 500;
+  }
+  .lesson-select-count { font-size: 11px; opacity: 0.5; font-weight: 400; margin-left: auto; margin-right: 6px; }
+  .lesson-select-arrow { color: #B8933E; font-size: 12px; }
+  .lesson-dropdown {
+    position: absolute; top: calc(100% + 6px); left: 0; right: 0; z-index: 20;
+    background: #232328; border: 1px solid #4A4A52; border-radius: 10px;
+    max-height: 320px; overflow-y: auto; box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+  }
+  .lesson-dropdown-item {
+    width: 100%; text-align: left; padding: 11px 16px; background: transparent; border: none;
+    border-bottom: 1px solid #33333a; color: #E8E1CF; font-family: 'Inter', sans-serif; font-size: 13px;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .lesson-dropdown-item:last-child { border-bottom: none; }
+  .lesson-dropdown-item.active { background: #A6332B; color: #E8E1CF; }
+  .lesson-dropdown-item .ld-count { font-size: 11px; opacity: 0.5; }
+
   .modes { display: flex; gap: 8px; margin-bottom: 24px; }
   .modes button {
     flex: 1; font-size: 14px; padding: 10px; border-radius: 8px; border: 1px solid #4A4A52;
@@ -134,7 +156,14 @@
     <div class="seal"><b id="sealCount">0</b><span id="sealTotal">/ 80</span></div>
   </header>
 
-  <nav id="lessonNav"></nav>
+  <div id="lessonSelectWrap" class="lesson-select-wrap">
+    <button id="lessonSelectBtn" class="lesson-select-btn">
+      <span id="lessonSelectLabel">1. Приветствия</span>
+      <span class="lesson-select-count" id="lessonSelectCount">8 слов</span>
+      <span class="lesson-select-arrow">▾</span>
+    </button>
+    <div id="lessonDropdown" class="lesson-dropdown" style="display:none;"></div>
+  </div>
 
   <div class="modes">
     <button id="modeLearnBtn" class="active">Учить</button>
@@ -407,6 +436,106 @@ const LESSONS = [
     { hanzi: "如果", pinyin: "rúguǒ", tone: 2, ru: "если", ex: "如果下雨，我们就不去。", exPinyin: "Rúguǒ xiàyǔ, wǒmen jiù bú qù.", exRu: "Если пойдёт дождь, мы не пойдём." },
     { hanzi: "就", pinyin: "jiù", tone: 4, ru: "тогда, сразу", ex: "我们现在就走。", exPinyin: "Wǒmen xiànzài jiù zǒu.", exRu: "Мы уходим прямо сейчас." },
   ]},
+  { id: 21, title: "Еда и напитки", words: [
+    { hanzi: "面条", pinyin: "miàntiáo", tone: 4, ru: "лапша", ex: "我喜欢吃面条。", exPinyin: "Wǒ xǐhuan chī miàntiáo.", exRu: "Я люблю есть лапшу." },
+    { hanzi: "鸡蛋", pinyin: "jīdàn", tone: 1, ru: "яйцо", ex: "早上我吃鸡蛋。", exPinyin: "Zǎoshang wǒ chī jīdàn.", exRu: "Утром я ем яйца." },
+    { hanzi: "苹果", pinyin: "píngguǒ", tone: 2, ru: "яблоко", ex: "这个苹果很甜。", exPinyin: "Zhège píngguǒ hěn tián.", exRu: "Это яблоко сладкое." },
+    { hanzi: "牛奶", pinyin: "niúnǎi", tone: 2, ru: "молоко", ex: "我每天喝牛奶。", exPinyin: "Wǒ měitiān hē niúnǎi.", exRu: "Я пью молоко каждый день." },
+    { hanzi: "咖啡", pinyin: "kāfēi", tone: 1, ru: "кофе", ex: "我想喝咖啡。", exPinyin: "Wǒ xiǎng hē kāfēi.", exRu: "Я хочу выпить кофе." },
+    { hanzi: "肉", pinyin: "ròu", tone: 4, ru: "мясо", ex: "我不吃肉。", exPinyin: "Wǒ bù chī ròu.", exRu: "Я не ем мясо." },
+    { hanzi: "菜", pinyin: "cài", tone: 4, ru: "блюдо, овощи", ex: "这个菜很好吃。", exPinyin: "Zhège cài hěn hǎochī.", exRu: "Это блюдо очень вкусное." },
+    { hanzi: "水果", pinyin: "shuǐguǒ", tone: 3, ru: "фрукты", ex: "我喜欢吃水果。", exPinyin: "Wǒ xǐhuan chī shuǐguǒ.", exRu: "Я люблю есть фрукты." },
+  ]},
+  { id: 22, title: "Профессии", words: [
+    { hanzi: "医生", pinyin: "yīshēng", tone: 1, ru: "врач", ex: "他是医生。", exPinyin: "Tā shì yīshēng.", exRu: "Он врач." },
+    { hanzi: "护士", pinyin: "hùshi", tone: 4, ru: "медсестра", ex: "她是护士。", exPinyin: "Tā shì hùshi.", exRu: "Она медсестра." },
+    { hanzi: "司机", pinyin: "sījī", tone: 1, ru: "водитель", ex: "司机开车很快。", exPinyin: "Sījī kāichē hěn kuài.", exRu: "Водитель водит быстро." },
+    { hanzi: "警察", pinyin: "jǐngchá", tone: 3, ru: "полицейский", ex: "警察在那儿。", exPinyin: "Jǐngchá zài nàr.", exRu: "Полицейский там." },
+    { hanzi: "厨师", pinyin: "chúshī", tone: 2, ru: "повар", ex: "我爸爸是厨师。", exPinyin: "Wǒ bàba shì chúshī.", exRu: "Мой папа повар." },
+    { hanzi: "律师", pinyin: "lǜshī", tone: 4, ru: "юрист", ex: "她想当律师。", exPinyin: "Tā xiǎng dāng lǜshī.", exRu: "Она хочет стать юристом." },
+    { hanzi: "工程师", pinyin: "gōngchéngshī", tone: 1, ru: "инженер", ex: "他是工程师。", exPinyin: "Tā shì gōngchéngshī.", exRu: "Он инженер." },
+    { hanzi: "服务员", pinyin: "fúwùyuán", tone: 2, ru: "официант", ex: "服务员，请给我菜单。", exPinyin: "Fúwùyuán, qǐng gěi wǒ càidān.", exRu: "Официант, дайте меню, пожалуйста." },
+  ]},
+  { id: 23, title: "Спорт и хобби", words: [
+    { hanzi: "运动", pinyin: "yùndòng", tone: 4, ru: "спорт", ex: "我喜欢运动。", exPinyin: "Wǒ xǐhuan yùndòng.", exRu: "Я люблю спорт." },
+    { hanzi: "踢足球", pinyin: "tī zúqiú", tone: 1, ru: "играть в футбол", ex: "他喜欢踢足球。", exPinyin: "Tā xǐhuan tī zúqiú.", exRu: "Он любит играть в футбол." },
+    { hanzi: "打篮球", pinyin: "dǎ lánqiú", tone: 3, ru: "играть в баскетбол", ex: "我们去打篮球吧。", exPinyin: "Wǒmen qù dǎ lánqiú ba.", exRu: "Пойдём играть в баскетбол." },
+    { hanzi: "游泳", pinyin: "yóuyǒng", tone: 2, ru: "плавать", ex: "我会游泳。", exPinyin: "Wǒ huì yóuyǒng.", exRu: "Я умею плавать." },
+    { hanzi: "跑步", pinyin: "pǎobù", tone: 3, ru: "бегать", ex: "我每天跑步。", exPinyin: "Wǒ měitiān pǎobù.", exRu: "Я бегаю каждый день." },
+    { hanzi: "唱歌", pinyin: "chànggē", tone: 4, ru: "петь", ex: "她唱歌很好听。", exPinyin: "Tā chànggē hěn hǎotīng.", exRu: "Она красиво поёт." },
+    { hanzi: "跳舞", pinyin: "tiàowǔ", tone: 4, ru: "танцевать", ex: "我们去跳舞吧。", exPinyin: "Wǒmen qù tiàowǔ ba.", exRu: "Пойдём танцевать." },
+    { hanzi: "画画", pinyin: "huàhuà", tone: 4, ru: "рисовать", ex: "我喜欢画画。", exPinyin: "Wǒ xǐhuan huàhuà.", exRu: "Я люблю рисовать." },
+  ]},
+  { id: 24, title: "Учёба и язык", words: [
+    { hanzi: "汉语", pinyin: "Hànyǔ", tone: 4, ru: "китайский язык", ex: "我在学汉语。", exPinyin: "Wǒ zài xué Hànyǔ.", exRu: "Я учу китайский язык." },
+    { hanzi: "英语", pinyin: "Yīngyǔ", tone: 1, ru: "английский язык", ex: "你会说英语吗？", exPinyin: "Nǐ huì shuō Yīngyǔ ma?", exRu: "Ты говоришь по-английски?" },
+    { hanzi: "单词", pinyin: "dāncí", tone: 1, ru: "слово", ex: "我记了很多单词。", exPinyin: "Wǒ jìle hěn duō dāncí.", exRu: "Я запомнил много слов." },
+    { hanzi: "句子", pinyin: "jùzi", tone: 4, ru: "предложение", ex: "请写一个句子。", exPinyin: "Qǐng xiě yí ge jùzi.", exRu: "Напишите предложение, пожалуйста." },
+    { hanzi: "课文", pinyin: "kèwén", tone: 4, ru: "текст урока", ex: "我们学了新课文。", exPinyin: "Wǒmen xuéle xīn kèwén.", exRu: "Мы изучили новый текст." },
+    { hanzi: "考试", pinyin: "kǎoshì", tone: 3, ru: "экзамен", ex: "明天有考试。", exPinyin: "Míngtiān yǒu kǎoshì.", exRu: "Завтра экзамен." },
+    { hanzi: "作业", pinyin: "zuòyè", tone: 4, ru: "домашнее задание", ex: "我做完作业了。", exPinyin: "Wǒ zuòwán zuòyè le.", exRu: "Я закончил домашнее задание." },
+    { hanzi: "练习", pinyin: "liànxí", tone: 4, ru: "упражнение", ex: "多练习就会进步。", exPinyin: "Duō liànxí jiù huì jìnbù.", exRu: "Больше практикуйся, и будет прогресс." },
+  ]},
+  { id: 25, title: "Путешествия", words: [
+    { hanzi: "旅游", pinyin: "lǚyóu", tone: 3, ru: "путешествовать", ex: "我喜欢旅游。", exPinyin: "Wǒ xǐhuan lǚyóu.", exRu: "Я люблю путешествовать." },
+    { hanzi: "护照", pinyin: "hùzhào", tone: 4, ru: "паспорт", ex: "别忘了带护照。", exPinyin: "Bié wàngle dài hùzhào.", exRu: "Не забудь взять паспорт." },
+    { hanzi: "签证", pinyin: "qiānzhèng", tone: 1, ru: "виза", ex: "我需要办签证。", exPinyin: "Wǒ xūyào bàn qiānzhèng.", exRu: "Мне нужно оформить визу." },
+    { hanzi: "酒店", pinyin: "jiǔdiàn", tone: 3, ru: "отель", ex: "我们住在这家酒店。", exPinyin: "Wǒmen zhù zài zhè jiā jiǔdiàn.", exRu: "Мы живём в этом отеле." },
+    { hanzi: "行李", pinyin: "xíngli", tone: 2, ru: "багаж", ex: "我的行李很重。", exPinyin: "Wǒ de xíngli hěn zhòng.", exRu: "Мой багаж тяжёлый." },
+    { hanzi: "地图", pinyin: "dìtú", tone: 4, ru: "карта", ex: "请给我一张地图。", exPinyin: "Qǐng gěi wǒ yì zhāng dìtú.", exRu: "Дайте мне карту, пожалуйста." },
+    { hanzi: "景点", pinyin: "jǐngdiǎn", tone: 3, ru: "достопримечательность", ex: "这个景点很有名。", exPinyin: "Zhège jǐngdiǎn hěn yǒumíng.", exRu: "Эта достопримечательность известна." },
+    { hanzi: "导游", pinyin: "dǎoyóu", tone: 3, ru: "гид", ex: "我们的导游很好。", exPinyin: "Wǒmen de dǎoyóu hěn hǎo.", exRu: "Наш гид хороший." },
+  ]},
+  { id: 26, title: "Компьютер и техника", words: [
+    { hanzi: "电脑", pinyin: "diànnǎo", tone: 4, ru: "компьютер", ex: "我的电脑坏了。", exPinyin: "Wǒ de diànnǎo huài le.", exRu: "Мой компьютер сломался." },
+    { hanzi: "手机", pinyin: "shǒujī", tone: 3, ru: "телефон", ex: "我的手机没电了。", exPinyin: "Wǒ de shǒujī méi diàn le.", exRu: "У моего телефона сел заряд." },
+    { hanzi: "网络", pinyin: "wǎngluò", tone: 3, ru: "интернет", ex: "这里的网络很慢。", exPinyin: "Zhèlǐ de wǎngluò hěn màn.", exRu: "Здесь медленный интернет." },
+    { hanzi: "微信", pinyin: "Wēixìn", tone: 1, ru: "WeChat", ex: "加我的微信吧。", exPinyin: "Jiā wǒ de Wēixìn ba.", exRu: "Добавь меня в WeChat." },
+    { hanzi: "照片", pinyin: "zhàopiàn", tone: 4, ru: "фотография", ex: "这张照片很美。", exPinyin: "Zhè zhāng zhàopiàn hěn měi.", exRu: "Эта фотография красивая." },
+    { hanzi: "视频", pinyin: "shìpín", tone: 4, ru: "видео", ex: "我在看视频。", exPinyin: "Wǒ zài kàn shìpín.", exRu: "Я смотрю видео." },
+    { hanzi: "充电", pinyin: "chōngdiàn", tone: 1, ru: "заряжать", ex: "我要给手机充电。", exPinyin: "Wǒ yào gěi shǒujī chōngdiàn.", exRu: "Мне нужно зарядить телефон." },
+    { hanzi: "密码", pinyin: "mìmǎ", tone: 4, ru: "пароль", ex: "我忘了密码。", exPinyin: "Wǒ wàngle mìmǎ.", exRu: "Я забыл пароль." },
+  ]},
+  { id: 27, title: "Числа продвинутые", words: [
+    { hanzi: "十一", pinyin: "shíyī", tone: 2, ru: "одиннадцать", ex: "现在十一点。", exPinyin: "Xiànzài shíyī diǎn.", exRu: "Сейчас одиннадцать часов." },
+    { hanzi: "二十", pinyin: "èrshí", tone: 4, ru: "двадцать", ex: "他二十岁了。", exPinyin: "Tā èrshí suì le.", exRu: "Ему двадцать лет." },
+    { hanzi: "三十", pinyin: "sānshí", tone: 1, ru: "тридцать", ex: "这条街有三十家店。", exPinyin: "Zhè tiáo jiē yǒu sānshí jiā diàn.", exRu: "На этой улице тридцать магазинов." },
+    { hanzi: "一百", pinyin: "yìbǎi", tone: 3, ru: "сто", ex: "这个一百块钱。", exPinyin: "Zhège yìbǎi kuài qián.", exRu: "Это стоит сто юаней." },
+    { hanzi: "一千", pinyin: "yìqiān", tone: 1, ru: "тысяча", ex: "我存了一千块。", exPinyin: "Wǒ cúnle yìqiān kuài.", exRu: "Я накопил тысячу юаней." },
+    { hanzi: "半", pinyin: "bàn", tone: 4, ru: "половина", ex: "现在两点半。", exPinyin: "Xiànzài liǎng diǎn bàn.", exRu: "Сейчас половина третьего." },
+    { hanzi: "两", pinyin: "liǎng", tone: 3, ru: "два (перед счётным словом)", ex: "我要两个苹果。", exPinyin: "Wǒ yào liǎng ge píngguǒ.", exRu: "Мне нужно два яблока." },
+    { hanzi: "第", pinyin: "dì", tone: 4, ru: "показатель порядкового числ.", ex: "这是第一课。", exPinyin: "Zhè shì dì-yī kè.", exRu: "Это первый урок." },
+  ]},
+  { id: 28, title: "Месяцы и даты", words: [
+    { hanzi: "一月", pinyin: "yīyuè", tone: 1, ru: "январь", ex: "一月很冷。", exPinyin: "Yīyuè hěn lěng.", exRu: "Январь холодный." },
+    { hanzi: "二月", pinyin: "èryuè", tone: 4, ru: "февраль", ex: "二月有二十八天。", exPinyin: "Èryuè yǒu èrshíbā tiān.", exRu: "В феврале 28 дней." },
+    { hanzi: "月", pinyin: "yuè", tone: 4, ru: "месяц", ex: "这个月我很忙。", exPinyin: "Zhège yuè wǒ hěn máng.", exRu: "В этом месяце я занят." },
+    { hanzi: "号", pinyin: "hào", tone: 4, ru: "число (дата)", ex: "今天几号？", exPinyin: "Jīntiān jǐ hào?", exRu: "Какое сегодня число?" },
+    { hanzi: "年", pinyin: "nián", tone: 2, ru: "год", ex: "明年我要去中国。", exPinyin: "Míngnián wǒ yào qù Zhōngguó.", exRu: "В следующем году я поеду в Китай." },
+    { hanzi: "岁", pinyin: "suì", tone: 4, ru: "возраст (лет)", ex: "你多大岁数？", exPinyin: "Nǐ duō dà suìshu?", exRu: "Сколько тебе лет?" },
+    { hanzi: "生日", pinyin: "shēngrì", tone: 1, ru: "день рождения", ex: "祝你生日快乐！", exPinyin: "Zhù nǐ shēngrì kuàilè!", exRu: "С днём рождения!" },
+    { hanzi: "节日", pinyin: "jiérì", tone: 2, ru: "праздник", ex: "春节是中国的节日。", exPinyin: "Chūnjié shì Zhōngguó de jiérì.", exRu: "Праздник Весны — китайский праздник." },
+  ]},
+  { id: 29, title: "Направления и позиции", words: [
+    { hanzi: "东", pinyin: "dōng", tone: 1, ru: "восток", ex: "太阳从东边升起。", exPinyin: "Tàiyáng cóng dōngbian shēngqǐ.", exRu: "Солнце встаёт на востоке." },
+    { hanzi: "西", pinyin: "xī", tone: 1, ru: "запад", ex: "太阳从西边落下。", exPinyin: "Tàiyáng cóng xībian luòxià.", exRu: "Солнце садится на западе." },
+    { hanzi: "南", pinyin: "nán", tone: 2, ru: "юг", ex: "他住在南边。", exPinyin: "Tā zhù zài nánbian.", exRu: "Он живёт на юге." },
+    { hanzi: "北", pinyin: "běi", tone: 3, ru: "север", ex: "北京在中国的北边。", exPinyin: "Běijīng zài Zhōngguó de běibian.", exRu: "Пекин на севере Китая." },
+    { hanzi: "中间", pinyin: "zhōngjiān", tone: 1, ru: "середина", ex: "他坐在中间。", exPinyin: "Tā zuò zài zhōngjiān.", exRu: "Он сидит посередине." },
+    { hanzi: "旁边", pinyin: "pángbiān", tone: 1, ru: "рядом", ex: "银行在超市旁边。", exPinyin: "Yínháng zài chāoshì pángbiān.", exRu: "Банк рядом с супермаркетом." },
+    { hanzi: "对面", pinyin: "duìmiàn", tone: 4, ru: "напротив", ex: "学校在饭馆对面。", exPinyin: "Xuéxiào zài fànguǎn duìmiàn.", exRu: "Школа напротив ресторана." },
+    { hanzi: "附近", pinyin: "fùjìn", tone: 4, ru: "поблизости", ex: "附近有超市吗？", exPinyin: "Fùjìn yǒu chāoshì ma?", exRu: "Поблизости есть супермаркет?" },
+  ]},
+  { id: 30, title: "Абстрактные понятия", words: [
+    { hanzi: "意思", pinyin: "yìsi", tone: 4, ru: "значение, смысл", ex: "这个词是什么意思？", exPinyin: "Zhège cí shì shénme yìsi?", exRu: "Что означает это слово?" },
+    { hanzi: "问题", pinyin: "wèntí", tone: 2, ru: "проблема, вопрос", ex: "我有一个问题。", exPinyin: "Wǒ yǒu yí ge wèntí.", exRu: "У меня есть вопрос." },
+    { hanzi: "办法", pinyin: "bànfǎ", tone: 4, ru: "способ", ex: "我们想个办法吧。", exPinyin: "Wǒmen xiǎng ge bànfǎ ba.", exRu: "Давай придумаем способ." },
+    { hanzi: "机会", pinyin: "jīhuì", tone: 1, ru: "возможность", ex: "这是个好机会。", exPinyin: "Zhè shì ge hǎo jīhuì.", exRu: "Это хорошая возможность." },
+    { hanzi: "原因", pinyin: "yuányīn", tone: 2, ru: "причина", ex: "你知道原因吗？", exPinyin: "Nǐ zhīdào yuányīn ma?", exRu: "Ты знаешь причину?" },
+    { hanzi: "结果", pinyin: "jiéguǒ", tone: 2, ru: "результат", ex: "结果很好。", exPinyin: "Jiéguǒ hěn hǎo.", exRu: "Результат хороший." },
+    { hanzi: "经验", pinyin: "jīngyàn", tone: 1, ru: "опыт", ex: "他很有经验。", exPinyin: "Tā hěn yǒu jīngyàn.", exRu: "У него большой опыт." },
+    { hanzi: "计划", pinyin: "jìhuà", tone: 4, ru: "план", ex: "我们有个计划。", exPinyin: "Wǒmen yǒu ge jìhuà.", exRu: "У нас есть план." },
+  ]},
 ];
 
 const GRAMMAR_BASIC = [
@@ -673,9 +802,132 @@ const GRAMMAR_ADVANCED = [
     practice: { q: "把 ставится...", opts: ["перед объектом, до глагола", "после глагола", "в конце предложения"], correct: 0 } },
 ];
 
+const GRAMMAR_HSK3 = [
+  { id: 1, title: "被 — пассивный залог",
+    explain: "被 указывает, что подлежащее подвергается действию со стороны кого-то или чего-то — это пассивная конструкция, аналог русского «был сделан кем-то».",
+    formula: "объект действия + 被 + (исполнитель) + глагол + результат",
+    examples: [
+      { hanzi: "我的钱包被偷了。", pinyin: "Wǒ de qiánbāo bèi tōu le.", ru: "Мой кошелёк украли." },
+      { hanzi: "杯子被打破了。", pinyin: "Bēizi bèi dǎpò le.", ru: "Чашка разбилась." },
+      { hanzi: "这本书被他借走了。", pinyin: "Zhè běn shū bèi tā jièzǒu le.", ru: "Эту книгу он взял почитать." },
+    ],
+    practice: { q: "被 показывает, что подлежащее...", opts: ["само совершает действие", "подвергается действию", "сравнивается"], correct: 1 } },
+
+  { id: 2, title: "一边...一边... — одновременные действия",
+    explain: "Показывает, что два действия совершаются одновременно одним и тем же человеком.",
+    formula: "一边 + действие 1，一边 + действие 2",
+    examples: [
+      { hanzi: "他一边吃饭一边看电视。", pinyin: "Tā yìbiān chīfàn yìbiān kàn diànshì.", ru: "Он ест и одновременно смотрит телевизор." },
+      { hanzi: "我一边听音乐一边工作。", pinyin: "Wǒ yìbiān tīng yīnyuè yìbiān gōngzuò.", ru: "Я слушаю музыку и работаю одновременно." },
+      { hanzi: "她一边走一边说话。", pinyin: "Tā yìbiān zǒu yìbiān shuōhuà.", ru: "Она идёт и разговаривает одновременно." },
+    ],
+    practice: { q: "一边...一边... используется для...", opts: ["последовательных действий", "одновременных действий", "противопоставления"], correct: 1 } },
+
+  { id: 3, title: "越...越... — чем больше..., тем больше...",
+    explain: "Показывает прямую зависимость между двумя изменениями — «чем сильнее А, тем сильнее B».",
+    formula: "越 A 越 B",
+    examples: [
+      { hanzi: "你越练习越好。", pinyin: "Nǐ yuè liànxí yuè hǎo.", ru: "Чем больше практикуешься, тем лучше." },
+      { hanzi: "越吃越想吃。", pinyin: "Yuè chī yuè xiǎng chī.", ru: "Чем больше ешь, тем больше хочется есть." },
+      { hanzi: "问题越多越难。", pinyin: "Wèntí yuè duō yuè nán.", ru: "Чем больше проблем, тем сложнее." },
+    ],
+    practice: { q: "Какая конструкция для «чем..., тем...»?", opts: ["越...越...", "又...又...", "先...然后..."], correct: 0 } },
+
+  { id: 4, title: "不但...而且... — не только..., но и...",
+    explain: "Усиливает высказывание, добавляя вторую, дополнительную характеристику.",
+    formula: "不但 A，而且 B",
+    examples: [
+      { hanzi: "她不但漂亮，而且聪明。", pinyin: "Tā búdàn piàoliang, érqiě cōngming.", ru: "Она не только красивая, но и умная." },
+      { hanzi: "这个菜不但好吃，而且便宜。", pinyin: "Zhège cài búdàn hǎochī, érqiě piányi.", ru: "Это блюдо не только вкусное, но и дешёвое." },
+      { hanzi: "他不但会说中文，而且会写。", pinyin: "Tā búdàn huì shuō Zhōngwén, érqiě huì xiě.", ru: "Он не только говорит по-китайски, но и пишет." },
+    ],
+    practice: { q: "不但...而且... значит...", opts: ["не только..., но и...", "если..., то...", "хотя..., но..."], correct: 0 } },
+
+  { id: 5, title: "可能 / 也许 — вероятность",
+    explain: "Оба слова выражают предположение «возможно, вероятно» и обычно стоят перед сказуемым.",
+    formula: "可能/也许 + глагол/прилагательное",
+    examples: [
+      { hanzi: "他可能不知道。", pinyin: "Tā kěnéng bù zhīdào.", ru: "Возможно, он не знает." },
+      { hanzi: "明天也许会下雨。", pinyin: "Míngtiān yěxǔ huì xiàyǔ.", ru: "Завтра, возможно, будет дождь." },
+      { hanzi: "她可能已经走了。", pinyin: "Tā kěnéng yǐjīng zǒu le.", ru: "Возможно, она уже ушла." },
+    ],
+    practice: { q: "可能 и 也许 выражают...", opts: ["уверенность", "предположение", "запрет"], correct: 1 } },
+
+  { id: 6, title: "如果...就... — если..., то...",
+    explain: "Условная конструкция, связывающая условие и следствие.",
+    formula: "如果 A，就 B",
+    examples: [
+      { hanzi: "如果你忙，就不用来。", pinyin: "Rúguǒ nǐ máng, jiù búyòng lái.", ru: "Если ты занят, можешь не приходить." },
+      { hanzi: "如果下雨，我们就在家。", pinyin: "Rúguǒ xiàyǔ, wǒmen jiù zài jiā.", ru: "Если пойдёт дождь, мы останемся дома." },
+      { hanzi: "如果你想学，就一定能学会。", pinyin: "Rúguǒ nǐ xiǎng xué, jiù yídìng néng xuéhuì.", ru: "Если хочешь учиться, обязательно научишься." },
+    ],
+    practice: { q: "Что стоит во второй части условной конструкции?", opts: ["就", "才", "都"], correct: 0 } },
+
+  { id: 7, title: "把 — расширенный (сложный результат)",
+    explain: "Продолжение темы 把: теперь с более сложными результативными конструкциями и наречиями степени после глагола.",
+    formula: "подлежащее + 把 + объект + глагол + сложный результат",
+    examples: [
+      { hanzi: "她把房间打扫得很干净。", pinyin: "Tā bǎ fángjiān dǎsǎo de hěn gānjìng.", ru: "Она убрала комнату очень чисто." },
+      { hanzi: "请把这些字写清楚。", pinyin: "Qǐng bǎ zhèxiē zì xiě qīngchu.", ru: "Напишите эти иероглифы разборчиво." },
+      { hanzi: "我把手机放在包里了。", pinyin: "Wǒ bǎ shǒujī fàng zài bāo lǐ le.", ru: "Я положил телефон в сумку." },
+    ],
+    practice: { q: "После глагола в 把-конструкции обычно идёт...", opts: ["результат/степень", "вопросительная частица", "ничего"], correct: 0 } },
+
+  { id: 8, title: "是...的 — акцент на обстоятельствах",
+    explain: "Конструкция 是...的 подчёркивает КОГДА, ГДЕ или КАК произошло уже известное действие — акцент на деталях, а не на самом факте.",
+    formula: "подлежащее + 是 + обстоятельство + глагол + 的",
+    examples: [
+      { hanzi: "我是昨天到的。", pinyin: "Wǒ shì zuótiān dào de.", ru: "Я приехал именно вчера." },
+      { hanzi: "他是坐飞机来的。", pinyin: "Tā shì zuò fēijī lái de.", ru: "Он приехал именно на самолёте." },
+      { hanzi: "这是在北京买的。", pinyin: "Zhè shì zài Běijīng mǎi de.", ru: "Это куплено именно в Пекине." },
+    ],
+    practice: { q: "是...的 подчёркивает...", opts: ["сам факт действия", "детали уже известного действия", "будущее действие"], correct: 1 } },
+
+  { id: 9, title: "只有...才... — только если..., тогда...",
+    explain: "Указывает единственное условие, при котором возможен результат — более строгая версия «если».",
+    formula: "只有 A，才 B",
+    examples: [
+      { hanzi: "只有努力，才能成功。", pinyin: "Zhǐyǒu nǔlì, cái néng chénggōng.", ru: "Только через старание можно добиться успеха." },
+      { hanzi: "只有你去，我才去。", pinyin: "Zhǐyǒu nǐ qù, wǒ cái qù.", ru: "Я пойду, только если пойдёшь ты." },
+      { hanzi: "只有练习，才能提高。", pinyin: "Zhǐyǒu liànxí, cái néng tígāo.", ru: "Только через практику можно улучшить результат." },
+    ],
+    practice: { q: "只有...才... сильнее, чем 如果...就..., потому что...", opts: ["условие необязательное", "условие единственно возможное", "разницы нет"], correct: 1 } },
+
+  { id: 10, title: "连...都/也... — даже...",
+    explain: "Подчёркивает крайний, предельный случай — «даже это...».",
+    formula: "连 + существительное + 都/也 + глагол",
+    examples: [
+      { hanzi: "他连中文都不会说。", pinyin: "Tā lián Zhōngwén dōu bú huì shuō.", ru: "Он даже по-китайски не умеет говорить." },
+      { hanzi: "我连一分钟都没有。", pinyin: "Wǒ lián yì fēnzhōng dōu méiyǒu.", ru: "У меня даже минуты свободной нет." },
+      { hanzi: "她连饭都没吃。", pinyin: "Tā lián fàn dōu méi chī.", ru: "Она даже не поела." },
+    ],
+    practice: { q: "连...都... используется, чтобы...", opts: ["сравнить два предмета", "подчеркнуть крайний случай", "выразить вежливую просьбу"], correct: 1 } },
+
+  { id: 11, title: "会...的 — уверенность в будущем",
+    explain: "Выражает уверенность говорящего в том, что нечто произойдёт в будущем — «точно будет так».",
+    formula: "会 + глагол/прилагательное + 的",
+    examples: [
+      { hanzi: "明天会更好的。", pinyin: "Míngtiān huì gèng hǎo de.", ru: "Завтра будет лучше." },
+      { hanzi: "他会来的。", pinyin: "Tā huì lái de.", ru: "Он придёт, я уверен." },
+      { hanzi: "你一定会成功的。", pinyin: "Nǐ yídìng huì chénggōng de.", ru: "Ты обязательно добьёшься успеха." },
+    ],
+    practice: { q: "会...的 выражает...", opts: ["сомнение", "уверенность в будущем", "прошедшее действие"], correct: 1 } },
+
+  { id: 12, title: "尽管...但是... — несмотря на то что...",
+    explain: "Более формальный аналог 虽然...但是..., часто встречается в письменной и официальной речи.",
+    formula: "尽管 A，但是 B",
+    examples: [
+      { hanzi: "尽管很累，但是他还在工作。", pinyin: "Jǐnguǎn hěn lèi, dànshì tā hái zài gōngzuò.", ru: "Несмотря на усталость, он всё ещё работает." },
+      { hanzi: "尽管下雨，但是我们还是出去了。", pinyin: "Jǐnguǎn xiàyǔ, dànshì wǒmen háishi chūqù le.", ru: "Несмотря на дождь, мы всё же вышли." },
+      { hanzi: "尽管他不同意，但是我们还是做了。", pinyin: "Jǐnguǎn tā bù tóngyì, dànshì wǒmen háishi zuò le.", ru: "Несмотря на его несогласие, мы всё же сделали это." },
+    ],
+    practice: { q: "尽管...但是... по смыслу ближе всего к...", opts: ["虽然...但是...", "因为...所以...", "如果...就..."], correct: 0 } },
+];
+
 const GRAMMAR_LEVELS = [
   { id: "basic", label: "Базовый · HSK1", topics: GRAMMAR_BASIC },
   { id: "advanced", label: "Продвинутый · HSK2", topics: GRAMMAR_ADVANCED },
+  { id: "hsk3", label: "Свободный · HSK3", topics: GRAMMAR_HSK3 },
 ];
 
 const ALL_WORDS = LESSONS.flatMap(l => l.words);
@@ -716,16 +968,35 @@ function updateSeal() {
 }
 
 function renderNav() {
-  const nav = document.getElementById("lessonNav");
-  nav.innerHTML = "";
+  const cur = LESSONS.find(l => l.id === lessonId);
+  document.getElementById("lessonSelectLabel").textContent = cur.id + ". " + cur.title;
+  document.getElementById("lessonSelectCount").textContent = cur.words.length + " слов";
+
+  const dropdown = document.getElementById("lessonDropdown");
+  dropdown.innerHTML = "";
   LESSONS.forEach(l => {
     const b = document.createElement("button");
-    b.textContent = l.id + ". " + l.title;
-    if (l.id === lessonId) b.classList.add("active");
-    b.onclick = () => { lessonId = l.id; index = 0; flipped = false; renderNav(); renderLearn(); renderQuiz(true); };
-    nav.appendChild(b);
+    b.className = "lesson-dropdown-item" + (l.id === lessonId ? " active" : "");
+    b.innerHTML = '<span>' + l.id + '. ' + l.title + '</span><span class="ld-count">' + l.words.length + '</span>';
+    b.onclick = () => {
+      lessonId = l.id; index = 0; flipped = false;
+      dropdown.style.display = "none";
+      renderNav(); renderLearn(); renderQuiz(true);
+    };
+    dropdown.appendChild(b);
   });
 }
+
+document.getElementById("lessonSelectBtn").onclick = () => {
+  const dropdown = document.getElementById("lessonDropdown");
+  dropdown.style.display = dropdown.style.display === "none" ? "block" : "none";
+};
+document.addEventListener("click", (e) => {
+  const wrap = document.getElementById("lessonSelectWrap");
+  if (wrap && !wrap.contains(e.target)) {
+    document.getElementById("lessonDropdown").style.display = "none";
+  }
+});
 
 function renderLearn() {
   const words = currentWords();
@@ -827,7 +1098,7 @@ document.getElementById("modeLearnBtn").onclick = () => {
   document.getElementById("learnView").style.display = "block";
   document.getElementById("quizView").style.display = "none";
   document.getElementById("grammarView").style.display = "none";
-  document.getElementById("lessonNav").style.display = "flex";
+  document.getElementById("lessonSelectWrap").style.display = "block";
   index = 0;
   renderLearn();
 };
@@ -838,7 +1109,7 @@ document.getElementById("modeQuizBtn").onclick = () => {
   document.getElementById("learnView").style.display = "none";
   document.getElementById("quizView").style.display = "block";
   document.getElementById("grammarView").style.display = "none";
-  document.getElementById("lessonNav").style.display = "flex";
+  document.getElementById("lessonSelectWrap").style.display = "block";
   index = 0;
   renderQuiz();
 };
@@ -849,7 +1120,7 @@ document.getElementById("modeGrammarBtn").onclick = () => {
   document.getElementById("learnView").style.display = "none";
   document.getElementById("quizView").style.display = "none";
   document.getElementById("grammarView").style.display = "block";
-  document.getElementById("lessonNav").style.display = "none";
+  document.getElementById("lessonSelectWrap").style.display = "none";
   showGrammarList();
 };
 
