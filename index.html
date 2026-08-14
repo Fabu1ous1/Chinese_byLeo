@@ -79,6 +79,13 @@
   .flip-front { background: #E8E1CF; color: #1B1B20; }
   .flip-back { background: #A6332B; color: #E8E1CF; transform: rotateY(180deg); }
   .flip-front .char { font-size: 60px; }
+  .sound-btn {
+    background: none; border: none; font-size: 22px; cursor: pointer; padding: 4px 8px;
+    position: absolute; top: 10px; right: 10px; opacity: 0.6; line-height: 1;
+  }
+  .sound-btn:active { opacity: 1; transform: scale(1.1); }
+  .quiz-card { position: relative; }
+  .sound-btn-quiz { position: absolute; top: 10px; right: 10px; }
   .tone-row { display: flex; align-items: center; gap: 8px; }
   .tone-row span { font-size: 13px; opacity: 0.6; }
   .hint { font-size: 12px; opacity: 0.5; margin-top: 4px; }
@@ -176,6 +183,7 @@
       <div class="flip-inner" id="flipInner">
         <div class="flip-face flip-front">
           <span class="char hanzi" id="fCharFront"></span>
+          <button class="sound-btn" id="soundBtnFront" aria-label="Произнести">🔊</button>
           <div class="tone-row"><svg id="toneSvg" width="22" height="22" viewBox="0 0 22 22" fill="none"></svg><span id="toneLabel"></span></div>
           <p class="hint">нажми, чтобы перевернуть</p>
         </div>
@@ -200,6 +208,7 @@
   <div id="quizView" style="display:none;">
     <div class="quiz-card">
       <span class="char" id="qChar"></span>
+      <button class="sound-btn sound-btn-quiz" id="soundBtnQuiz" aria-label="Произнести">🔊</button>
       <span class="pinyin display" id="qPinyin"></span>
     </div>
     <p class="quiz-label">Что это значит?</p>
@@ -243,6 +252,18 @@ const LESSONS = [
     { hanzi: "不", pinyin: "bù", tone: 4, ru: "не, нет", ex: "我不是老师。", exPinyin: "Wǒ bú shì lǎoshī.", exRu: "Я не учитель." },
     { hanzi: "我", pinyin: "wǒ", tone: 3, ru: "я", ex: "我很好。", exPinyin: "Wǒ hěn hǎo.", exRu: "У меня всё хорошо." },
     { hanzi: "他", pinyin: "tā", tone: 1, ru: "он", ex: "他是我朋友。", exPinyin: "Tā shì wǒ péngyou.", exRu: "Он мой друг." },
+    { hanzi: "对不起", pinyin: "duìbuqǐ", tone: 4, ru: "извините", ex: "对不起，我迟到了。", exPinyin: "Duìbuqǐ, wǒ chídào le.", exRu: "Извините, я опоздал." },
+    { hanzi: "没关系", pinyin: "méiguānxi", tone: 2, ru: "ничего страшного", ex: "没关系，别担心。", exPinyin: "Méiguānxi, bié dānxīn.", exRu: "Ничего страшного, не переживай." },
+    { hanzi: "认识", pinyin: "rènshi", tone: 4, ru: "быть знакомым", ex: "很高兴认识你。", exPinyin: "Hěn gāoxìng rènshi nǐ.", exRu: "Очень рад познакомиться с тобой." },
+    { hanzi: "名字", pinyin: "míngzi", tone: 2, ru: "имя", ex: "你叫什么名字？", exPinyin: "Nǐ jiào shénme míngzi?", exRu: "Как тебя зовут?" },
+    { hanzi: "叫", pinyin: "jiào", tone: 4, ru: "зваться", ex: "我叫马克。", exPinyin: "Wǒ jiào Mǎkè.", exRu: "Меня зовут Марк." },
+    { hanzi: "请", pinyin: "qǐng", tone: 3, ru: "пожалуйста, просить", ex: "请坐。", exPinyin: "Qǐng zuò.", exRu: "Присаживайтесь, пожалуйста." },
+    { hanzi: "喂", pinyin: "wèi", tone: 4, ru: "алло", ex: "喂，你好！", exPinyin: "Wèi, nǐ hǎo!", exRu: "Алло, привет!" },
+    { hanzi: "先生", pinyin: "xiānsheng", tone: 1, ru: "господин", ex: "先生，您好。", exPinyin: "Xiānsheng, nín hǎo.", exRu: "Здравствуйте, господин." },
+    { hanzi: "小姐", pinyin: "xiǎojiě", tone: 3, ru: "госпожа, девушка", ex: "小姐，请问几点了？", exPinyin: "Xiǎojiě, qǐngwèn jǐ diǎn le?", exRu: "Девушка, подскажите, который час?" },
+    { hanzi: "高兴", pinyin: "gāoxìng", tone: 1, ru: "рад", ex: "见到你我很高兴。", exPinyin: "Jiàndào nǐ wǒ hěn gāoxìng.", exRu: "Рад тебя видеть." },
+    { hanzi: "同学", pinyin: "tóngxué", tone: 2, ru: "одноклассник", ex: "他是我的同学。", exPinyin: "Tā shì wǒ de tóngxué.", exRu: "Он мой одноклассник." },
+    { hanzi: "我们", pinyin: "wǒmen", tone: 3, ru: "мы", ex: "我们去学校吧。", exPinyin: "Wǒmen qù xuéxiào ba.", exRu: "Пойдём в школу." },
   ]},
   { id: 2, title: "Числа", words: [
     { hanzi: "一", pinyin: "yī", tone: 1, ru: "один", ex: "我有一个朋友。", exPinyin: "Wǒ yǒu yí ge péngyou.", exRu: "У меня есть один друг." },
@@ -255,6 +276,16 @@ const LESSONS = [
     { hanzi: "八", pinyin: "bā", tone: 1, ru: "восемь", ex: "商店八点开门。", exPinyin: "Shāngdiàn bā diǎn kāimén.", exRu: "Магазин открывается в восемь." },
     { hanzi: "九", pinyin: "jiǔ", tone: 3, ru: "девять", ex: "我九点睡觉。", exPinyin: "Wǒ jiǔ diǎn shuìjiào.", exRu: "Я ложусь спать в девять." },
     { hanzi: "十", pinyin: "shí", tone: 2, ru: "десять", ex: "我学了十个汉字。", exPinyin: "Wǒ xuéle shí ge Hànzì.", exRu: "Я выучил десять иероглифов." },
+    { hanzi: "号", pinyin: "hào", tone: 4, ru: "число (дата)", ex: "我的生日是五月三号。", exPinyin: "Wǒ de shēngrì shì wǔyuè sān hào.", exRu: "Мой день рождения третьего мая." },
+    { hanzi: "点", pinyin: "diǎn", tone: 3, ru: "час", ex: "现在几点？", exPinyin: "Xiànzài jǐ diǎn?", exRu: "Который час?" },
+    { hanzi: "分钟", pinyin: "fēnzhōng", tone: 1, ru: "минута", ex: "等五分钟。", exPinyin: "Děng wǔ fēnzhōng.", exRu: "Подожди пять минут." },
+    { hanzi: "岁", pinyin: "suì", tone: 4, ru: "лет (возраст)", ex: "我今年二十岁。", exPinyin: "Wǒ jīnnián èrshí suì.", exRu: "Мне в этом году двадцать лет." },
+    { hanzi: "块", pinyin: "kuài", tone: 4, ru: "юань (разг.)", ex: "这个十块钱。", exPinyin: "Zhège shí kuài qián.", exRu: "Это стоит десять юаней." },
+    { hanzi: "些", pinyin: "xiē", tone: 1, ru: "несколько", ex: "我买了一些水果。", exPinyin: "Wǒ mǎile yìxiē shuǐguǒ.", exRu: "Я купил немного фруктов." },
+    { hanzi: "本", pinyin: "běn", tone: 3, ru: "счётное слово (книги)", ex: "我有三本书。", exPinyin: "Wǒ yǒu sān běn shū.", exRu: "У меня три книги." },
+    { hanzi: "个", pinyin: "gè", tone: 4, ru: "универсальное счётное слово", ex: "我要一个苹果。", exPinyin: "Wǒ yào yí ge píngguǒ.", exRu: "Мне нужно одно яблоко." },
+    { hanzi: "多", pinyin: "duō", tone: 1, ru: "много", ex: "这里人很多。", exPinyin: "Zhèlǐ rén hěn duō.", exRu: "Здесь много людей." },
+    { hanzi: "少", pinyin: "shǎo", tone: 3, ru: "мало", ex: "我的钱很少。", exPinyin: "Wǒ de qián hěn shǎo.", exRu: "У меня мало денег." },
   ]},
   { id: 3, title: "Люди и семья", words: [
     { hanzi: "人", pinyin: "rén", tone: 2, ru: "человек", ex: "这里有很多人。", exPinyin: "Zhèlǐ yǒu hěn duō rén.", exRu: "Здесь много людей." },
@@ -265,6 +296,18 @@ const LESSONS = [
     { hanzi: "妈妈", pinyin: "māma", tone: 1, ru: "мама", ex: "妈妈在家。", exPinyin: "Māma zài jiā.", exRu: "Мама дома." },
     { hanzi: "爸爸", pinyin: "bàba", tone: 4, ru: "папа", ex: "爸爸喜欢喝茶。", exPinyin: "Bàba xǐhuan hē chá.", exRu: "Папа любит пить чай." },
     { hanzi: "孩子", pinyin: "háizi", tone: 2, ru: "ребёнок", ex: "这个孩子很可爱。", exPinyin: "Zhège háizi hěn kě'ài.", exRu: "Этот ребёнок очень милый." },
+    { hanzi: "儿子", pinyin: "érzi", tone: 2, ru: "сын", ex: "他是我的儿子。", exPinyin: "Tā shì wǒ de érzi.", exRu: "Он мой сын." },
+    { hanzi: "女儿", pinyin: "nǚ'ér", tone: 3, ru: "дочь", ex: "我女儿五岁了。", exPinyin: "Wǒ nǚ'ér wǔ suì le.", exRu: "Моей дочери пять лет." },
+    { hanzi: "哥哥", pinyin: "gēge", tone: 1, ru: "старший брат", ex: "我哥哥在北京工作。", exPinyin: "Wǒ gēge zài Běijīng gōngzuò.", exRu: "Мой старший брат работает в Пекине." },
+    { hanzi: "姐姐", pinyin: "jiějie", tone: 3, ru: "старшая сестра", ex: "姐姐比我大三岁。", exPinyin: "Jiějie bǐ wǒ dà sān suì.", exRu: "Старшая сестра старше меня на три года." },
+    { hanzi: "弟弟", pinyin: "dìdi", tone: 4, ru: "младший брат", ex: "我弟弟很聪明。", exPinyin: "Wǒ dìdi hěn cōngming.", exRu: "Мой младший брат очень умный." },
+    { hanzi: "妹妹", pinyin: "mèimei", tone: 4, ru: "младшая сестра", ex: "妹妹在上学。", exPinyin: "Mèimei zài shàngxué.", exRu: "Младшая сестра учится в школе." },
+    { hanzi: "丈夫", pinyin: "zhàngfu", tone: 4, ru: "муж", ex: "她的丈夫是医生。", exPinyin: "Tā de zhàngfu shì yīshēng.", exRu: "Её муж врач." },
+    { hanzi: "妻子", pinyin: "qīzi", tone: 1, ru: "жена", ex: "他的妻子很漂亮。", exPinyin: "Tā de qīzi hěn piàoliang.", exRu: "Его жена красивая." },
+    { hanzi: "爷爷", pinyin: "yéye", tone: 2, ru: "дедушка", ex: "爷爷喜欢喝茶。", exPinyin: "Yéye xǐhuan hē chá.", exRu: "Дедушка любит пить чай." },
+    { hanzi: "奶奶", pinyin: "nǎinai", tone: 3, ru: "бабушка", ex: "奶奶做的菜很好吃。", exPinyin: "Nǎinai zuò de cài hěn hǎochī.", exRu: "Блюда бабушки очень вкусные." },
+    { hanzi: "大家", pinyin: "dàjiā", tone: 4, ru: "все (люди)", ex: "大家好！", exPinyin: "Dàjiā hǎo!", exRu: "Всем привет!" },
+    { hanzi: "位", pinyin: "wèi", tone: 4, ru: "вежл. счётное слово (люди)", ex: "这位是我的老师。", exPinyin: "Zhè wèi shì wǒ de lǎoshī.", exRu: "Это мой учитель." },
   ]},
   { id: 4, title: "Еда и быт", words: [
     { hanzi: "吃", pinyin: "chī", tone: 1, ru: "есть (кушать)", ex: "我们一起吃饭吧。", exPinyin: "Wǒmen yìqǐ chīfàn ba.", exRu: "Давай поедим вместе." },
@@ -275,6 +318,12 @@ const LESSONS = [
     { hanzi: "大", pinyin: "dà", tone: 4, ru: "большой", ex: "这个房子很大。", exPinyin: "Zhège fángzi hěn dà.", exRu: "Этот дом очень большой." },
     { hanzi: "小", pinyin: "xiǎo", tone: 3, ru: "маленький", ex: "我有一只小猫。", exPinyin: "Wǒ yǒu yì zhī xiǎo māo.", exRu: "У меня есть маленький котёнок." },
     { hanzi: "喜欢", pinyin: "xǐhuan", tone: 3, ru: "нравиться", ex: "我喜欢中国菜。", exPinyin: "Wǒ xǐhuan Zhōngguó cài.", exRu: "Мне нравится китайская кухня." },
+    { hanzi: "面包", pinyin: "miànbāo", tone: 4, ru: "хлеб", ex: "我早上吃面包。", exPinyin: "Wǒ zǎoshang chī miànbāo.", exRu: "Утром я ем хлеб." },
+    { hanzi: "好吃", pinyin: "hǎochī", tone: 3, ru: "вкусный", ex: "这个菜很好吃。", exPinyin: "Zhège cài hěn hǎochī.", exRu: "Это блюдо очень вкусное." },
+    { hanzi: "饿", pinyin: "è", tone: 4, ru: "голодный", ex: "我很饿。", exPinyin: "Wǒ hěn è.", exRu: "Я очень голоден." },
+    { hanzi: "渴", pinyin: "kě", tone: 3, ru: "хочется пить", ex: "我渴了，想喝水。", exPinyin: "Wǒ kě le, xiǎng hē shuǐ.", exRu: "Мне хочется пить, хочу воды." },
+    { hanzi: "杯子", pinyin: "bēizi", tone: 1, ru: "чашка", ex: "请给我一个杯子。", exPinyin: "Qǐng gěi wǒ yí ge bēizi.", exRu: "Дайте мне чашку, пожалуйста." },
+    { hanzi: "瓶", pinyin: "píng", tone: 2, ru: "бутылка", ex: "我买了一瓶水。", exPinyin: "Wǒ mǎile yì píng shuǐ.", exRu: "Я купил бутылку воды." },
   ]},
   { id: 5, title: "Время и дни", words: [
     { hanzi: "今天", pinyin: "jīntiān", tone: 1, ru: "сегодня", ex: "今天天气很好。", exPinyin: "Jīntiān tiānqì hěn hǎo.", exRu: "Сегодня хорошая погода." },
@@ -285,6 +334,11 @@ const LESSONS = [
     { hanzi: "早上", pinyin: "zǎoshang", tone: 3, ru: "утро", ex: "早上好！", exPinyin: "Zǎoshang hǎo!", exRu: "Доброе утро!" },
     { hanzi: "晚上", pinyin: "wǎnshang", tone: 3, ru: "вечер", ex: "晚上我们出去吃饭。", exPinyin: "Wǎnshang wǒmen chūqù chīfàn.", exRu: "Вечером мы пойдём поесть." },
     { hanzi: "星期", pinyin: "xīngqī", tone: 1, ru: "неделя", ex: "这个星期很忙。", exPinyin: "Zhège xīngqī hěn máng.", exRu: "Эта неделя очень занятая." },
+    { hanzi: "中午", pinyin: "zhōngwǔ", tone: 1, ru: "полдень", ex: "中午我们一起吃饭吧。", exPinyin: "Zhōngwǔ wǒmen yìqǐ chīfàn ba.", exRu: "Пообедаем вместе в полдень." },
+    { hanzi: "下午", pinyin: "xiàwǔ", tone: 4, ru: "после полудня", ex: "下午我要开会。", exPinyin: "Xiàwǔ wǒ yào kāihuì.", exRu: "После обеда у меня встреча." },
+    { hanzi: "分", pinyin: "fēn", tone: 1, ru: "минута", ex: "现在三点十分。", exPinyin: "Xiànzài sān diǎn shí fēn.", exRu: "Сейчас десять минут четвёртого." },
+    { hanzi: "刻", pinyin: "kè", tone: 4, ru: "четверть часа", ex: "现在四点一刻。", exPinyin: "Xiànzài sì diǎn yí kè.", exRu: "Сейчас четверть пятого." },
+    { hanzi: "常常", pinyin: "chángcháng", tone: 2, ru: "часто", ex: "我常常去公园。", exPinyin: "Wǒ chángcháng qù gōngyuán.", exRu: "Я часто хожу в парк." },
   ]},
   { id: 6, title: "Действия", words: [
     { hanzi: "去", pinyin: "qù", tone: 4, ru: "идти, ехать", ex: "我要去学校。", exPinyin: "Wǒ yào qù xuéxiào.", exRu: "Я иду в школу." },
@@ -295,6 +349,13 @@ const LESSONS = [
     { hanzi: "做", pinyin: "zuò", tone: 4, ru: "делать", ex: "你在做什么？", exPinyin: "Nǐ zài zuò shénme?", exRu: "Что ты делаешь?" },
     { hanzi: "想", pinyin: "xiǎng", tone: 3, ru: "хотеть, думать", ex: "我想喝茶。", exPinyin: "Wǒ xiǎng hē chá.", exRu: "Я хочу выпить чаю." },
     { hanzi: "有", pinyin: "yǒu", tone: 3, ru: "иметь", ex: "你有时间吗？", exPinyin: "Nǐ yǒu shíjiān ma?", exRu: "У тебя есть время?" },
+    { hanzi: "写", pinyin: "xiě", tone: 3, ru: "писать", ex: "请写你的名字。", exPinyin: "Qǐng xiě nǐ de míngzi.", exRu: "Напишите своё имя, пожалуйста." },
+    { hanzi: "读", pinyin: "dú", tone: 2, ru: "читать (вслух)", ex: "请读这个句子。", exPinyin: "Qǐng dú zhège jùzi.", exRu: "Прочитайте это предложение." },
+    { hanzi: "学习", pinyin: "xuéxí", tone: 2, ru: "учиться", ex: "我在学习中文。", exPinyin: "Wǒ zài xuéxí Zhōngwén.", exRu: "Я учу китайский." },
+    { hanzi: "睡觉", pinyin: "shuìjiào", tone: 4, ru: "спать", ex: "我十一点睡觉。", exPinyin: "Wǒ shíyī diǎn shuìjiào.", exRu: "Я ложусь спать в одиннадцать." },
+    { hanzi: "起床", pinyin: "qǐchuáng", tone: 3, ru: "вставать", ex: "我七点起床。", exPinyin: "Wǒ qī diǎn qǐchuáng.", exRu: "Я встаю в семь." },
+    { hanzi: "回", pinyin: "huí", tone: 2, ru: "возвращаться", ex: "我要回家了。", exPinyin: "Wǒ yào huí jiā le.", exRu: "Мне пора домой." },
+    { hanzi: "玩", pinyin: "wán", tone: 2, ru: "играть, веселиться", ex: "孩子们在外面玩。", exPinyin: "Háizimen zài wàimiàn wán.", exRu: "Дети играют на улице." },
   ]},
   { id: 7, title: "Место и направление", words: [
     { hanzi: "这", pinyin: "zhè", tone: 4, ru: "это, этот", ex: "这是我的书。", exPinyin: "Zhè shì wǒ de shū.", exRu: "Это моя книга." },
@@ -305,6 +366,11 @@ const LESSONS = [
     { hanzi: "下", pinyin: "xià", tone: 4, ru: "вниз, под", ex: "猫在桌子下。", exPinyin: "Māo zài zhuōzi xià.", exRu: "Кошка под столом." },
     { hanzi: "前面", pinyin: "qiánmiàn", tone: 2, ru: "впереди", ex: "学校在前面。", exPinyin: "Xuéxiào zài qiánmiàn.", exRu: "Школа впереди." },
     { hanzi: "后面", pinyin: "hòumiàn", tone: 4, ru: "сзади", ex: "他在我后面。", exPinyin: "Tā zài wǒ hòumiàn.", exRu: "Он позади меня." },
+    { hanzi: "外面", pinyin: "wàimiàn", tone: 4, ru: "снаружи", ex: "外面很冷。", exPinyin: "Wàimiàn hěn lěng.", exRu: "На улице холодно." },
+    { hanzi: "左边", pinyin: "zuǒbian", tone: 3, ru: "слева", ex: "银行在左边。", exPinyin: "Yínháng zài zuǒbian.", exRu: "Банк слева." },
+    { hanzi: "右边", pinyin: "yòubian", tone: 4, ru: "справа", ex: "商店在右边。", exPinyin: "Shāngdiàn zài yòubian.", exRu: "Магазин справа." },
+    { hanzi: "东西", pinyin: "dōngxi", tone: 1, ru: "вещь", ex: "我买了很多东西。", exPinyin: "Wǒ mǎile hěn duō dōngxi.", exRu: "Я купил много вещей." },
+    { hanzi: "在", pinyin: "zài", tone: 4, ru: "находиться в", ex: "他在家。", exPinyin: "Tā zài jiā.", exRu: "Он дома." },
   ]},
   { id: 8, title: "Вопросы", words: [
     { hanzi: "什么", pinyin: "shénme", tone: 2, ru: "что", ex: "这是什么？", exPinyin: "Zhè shì shénme?", exRu: "Что это?" },
@@ -315,6 +381,8 @@ const LESSONS = [
     { hanzi: "多少", pinyin: "duōshao", tone: 1, ru: "сколько", ex: "这个多少钱？", exPinyin: "Zhège duōshao qián?", exRu: "Сколько это стоит?" },
     { hanzi: "几", pinyin: "jǐ", tone: 3, ru: "сколько (счётное)", ex: "你家有几口人？", exPinyin: "Nǐ jiā yǒu jǐ kǒu rén?", exRu: "Сколько человек в твоей семье?" },
     { hanzi: "吗", pinyin: "ma", tone: 0, ru: "вопрос. частица", ex: "你忙吗？", exPinyin: "Nǐ máng ma?", exRu: "Ты занят?" },
+    { hanzi: "呢", pinyin: "ne", tone: 0, ru: "а как насчёт...?", ex: "我很好，你呢？", exPinyin: "Wǒ hěn hǎo, nǐ ne?", exRu: "У меня всё хорошо, а у тебя?" },
+    { hanzi: "怎么样", pinyin: "zěnmeyàng", tone: 3, ru: "как насчёт, каково", ex: "今天天气怎么样？", exPinyin: "Jīntiān tiānqì zěnmeyàng?", exRu: "Какая сегодня погода?" },
   ]},
   { id: 9, title: "Качества", words: [
     { hanzi: "好", pinyin: "hǎo", tone: 3, ru: "хороший", ex: "这本书很好。", exPinyin: "Zhè běn shū hěn hǎo.", exRu: "Эта книга хорошая." },
@@ -325,6 +393,11 @@ const LESSONS = [
     { hanzi: "短", pinyin: "duǎn", tone: 3, ru: "короткий", ex: "这条路很短。", exPinyin: "Zhè tiáo lù hěn duǎn.", exRu: "Эта дорога короткая." },
     { hanzi: "新", pinyin: "xīn", tone: 1, ru: "новый", ex: "我买了新手机。", exPinyin: "Wǒ mǎile xīn shǒujī.", exRu: "Я купил новый телефон." },
     { hanzi: "旧", pinyin: "jiù", tone: 4, ru: "старый (вещь)", ex: "这是旧照片。", exPinyin: "Zhè shì jiù zhàopiàn.", exRu: "Это старая фотография." },
+    { hanzi: "漂亮", pinyin: "piàoliang", tone: 4, ru: "красивый", ex: "她很漂亮。", exPinyin: "Tā hěn piàoliang.", exRu: "Она красивая." },
+    { hanzi: "快", pinyin: "kuài", tone: 4, ru: "быстрый", ex: "他跑得很快。", exPinyin: "Tā pǎo de hěn kuài.", exRu: "Он бегает быстро." },
+    { hanzi: "慢", pinyin: "màn", tone: 4, ru: "медленный", ex: "这辆车开得很慢。", exPinyin: "Zhè liàng chē kāi de hěn màn.", exRu: "Эта машина едет медленно." },
+    { hanzi: "胖", pinyin: "pàng", tone: 4, ru: "толстый", ex: "他比以前胖了。", exPinyin: "Tā bǐ yǐqián pàng le.", exRu: "Он потолстел по сравнению с прошлым." },
+    { hanzi: "瘦", pinyin: "shòu", tone: 4, ru: "худой", ex: "她很瘦。", exPinyin: "Tā hěn shòu.", exRu: "Она худая." },
   ]},
   { id: 10, title: "Природа и цвета", words: [
     { hanzi: "红色", pinyin: "hóngsè", tone: 2, ru: "красный", ex: "我喜欢红色。", exPinyin: "Wǒ xǐhuan hóngsè.", exRu: "Мне нравится красный цвет." },
@@ -335,6 +408,9 @@ const LESSONS = [
     { hanzi: "树", pinyin: "shù", tone: 4, ru: "дерево", ex: "公园里有很多树。", exPinyin: "Gōngyuán lǐ yǒu hěn duō shù.", exRu: "В парке много деревьев." },
     { hanzi: "花", pinyin: "huā", tone: 1, ru: "цветок", ex: "她喜欢花。", exPinyin: "Tā xǐhuan huā.", exRu: "Она любит цветы." },
     { hanzi: "月亮", pinyin: "yuèliang", tone: 4, ru: "луна", ex: "今晚月亮很亮。", exPinyin: "Jīnwǎn yuèliang hěn liàng.", exRu: "Сегодня вечером луна очень яркая." },
+    { hanzi: "蓝色", pinyin: "lánsè", tone: 2, ru: "синий", ex: "天空是蓝色的。", exPinyin: "Tiānkōng shì lánsè de.", exRu: "Небо синее." },
+    { hanzi: "绿色", pinyin: "lǜsè", tone: 4, ru: "зелёный", ex: "树叶是绿色的。", exPinyin: "Shùyè shì lǜsè de.", exRu: "Листья зелёные." },
+    { hanzi: "黄色", pinyin: "huángsè", tone: 2, ru: "жёлтый", ex: "我喜欢黄色。", exPinyin: "Wǒ xǐhuan huángsè.", exRu: "Мне нравится жёлтый цвет." },
   ]},
   { id: 11, title: "Одежда и покупки", words: [
     { hanzi: "衣服", pinyin: "yīfu", tone: 2, ru: "одежда", ex: "我买了新衣服。", exPinyin: "Wǒ mǎile xīn yīfu.", exRu: "Я купил новую одежду." },
@@ -1390,9 +1466,39 @@ function renderQuiz(reset) {
   updateSeal();
 }
 
+function speak(text) {
+  try {
+    if (!("speechSynthesis" in window)) return;
+    window.speechSynthesis.cancel();
+    const utter = new SpeechSynthesisUtterance(text);
+    utter.lang = "zh-CN";
+    utter.rate = 0.85;
+    const voices = window.speechSynthesis.getVoices();
+    const zhVoice = voices.find(v => v.lang === "zh-CN") || voices.find(v => v.lang && v.lang.startsWith("zh"));
+    if (zhVoice) utter.voice = zhVoice;
+    window.speechSynthesis.speak(utter);
+    try {
+      window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.HapticFeedback &&
+      window.Telegram.WebApp.HapticFeedback.impactOccurred("light");
+    } catch (e) {}
+  } catch (e) {}
+}
+
 document.getElementById("flipCard").onclick = () => {
   flipped = !flipped;
   document.getElementById("flipInner").classList.toggle("flipped", flipped);
+};
+
+document.getElementById("soundBtnFront").onclick = (e) => {
+  e.stopPropagation();
+  const words = currentWords();
+  const w = words[index % words.length];
+  speak(w.hanzi);
+};
+
+document.getElementById("soundBtnQuiz").onclick = (e) => {
+  e.stopPropagation();
+  if (quizWord) speak(quizWord.hanzi);
 };
 
 document.getElementById("markBtn").onclick = () => {
