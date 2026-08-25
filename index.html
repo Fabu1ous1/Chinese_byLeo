@@ -106,6 +106,13 @@
   .example .ex-ru { font-size: 12px; opacity: 0.7; display: block; margin-top: 2px; }
 
   .row { display: flex; gap: 8px; }
+  .status-row { display: flex; gap: 8px; margin-bottom: 10px; }
+  .status-btn {
+    flex: 1; padding: 11px; border-radius: 8px; font-size: 14px; font-weight: 500;
+    background: transparent; border: 1px solid #4A4A52; color: #B8B3A5; font-family: 'Inter', sans-serif;
+  }
+  .status-btn.active-learning { background: #B8933E; border-color: #B8933E; color: #1B1B20; }
+  .status-btn.active-learned { background: #4F6F62; border-color: #4F6F62; color: #E8E1CF; }
   .btn-outline {
     flex: 1; padding: 11px; border-radius: 8px; font-size: 14px; font-weight: 500;
     background: transparent; border: 1px solid #4F6F62; color: #4F6F62; font-family: 'Inter', sans-serif;
@@ -206,8 +213,12 @@
         </div>
       </div>
     </div>
+    <div class="status-row">
+      <button class="status-btn" id="learningBtn">Ещё учу</button>
+      <button class="status-btn" id="learnedBtn">Выучено</button>
+    </div>
     <div class="row">
-      <button class="btn-outline" id="markBtn">Отметить выученным</button>
+      <button class="btn-outline" id="prevBtn">← Назад</button>
       <button class="btn-solid" id="nextBtn">Далее →</button>
     </div>
     <p class="counter" id="counter"></p>
@@ -2213,9 +2224,12 @@ function renderLearn() {
     '<path d="' + (TONE_PATH[w.tone] || TONE_PATH[1]) + '" stroke="#A6332B" stroke-width="2.4" stroke-linecap="round"/>';
   document.getElementById("flipInner").classList.remove("flipped");
   flipped = false;
-  const markBtn = document.getElementById("markBtn");
-  if (learned[w.hanzi]) { markBtn.textContent = "Выучено ✓"; markBtn.classList.add("done"); }
-  else { markBtn.textContent = "Отметить выученным"; markBtn.classList.remove("done"); }
+  const learningBtn = document.getElementById("learningBtn");
+  const learnedBtn = document.getElementById("learnedBtn");
+  learningBtn.classList.remove("active-learning");
+  learnedBtn.classList.remove("active-learned");
+  if (learned[w.hanzi]) { learnedBtn.classList.add("active-learned"); }
+  else { learningBtn.classList.add("active-learning"); }
   document.getElementById("counter").textContent = ((index % words.length) + 1) + " / " + words.length + " в этом уроке";
   updateSeal();
 }
@@ -2303,11 +2317,25 @@ document.getElementById("soundBtnQuiz").onclick = (e) => {
   if (quizWord) speak(quizWord.hanzi);
 };
 
-document.getElementById("markBtn").onclick = () => {
+document.getElementById("learningBtn").onclick = () => {
+  const words = currentWords();
+  const w = words[index % words.length];
+  learned[w.hanzi] = false;
+  saveProgress();
+  renderLearn();
+};
+
+document.getElementById("learnedBtn").onclick = () => {
   const words = currentWords();
   const w = words[index % words.length];
   learned[w.hanzi] = true;
   saveProgress();
+  renderLearn();
+};
+
+document.getElementById("prevBtn").onclick = () => {
+  const words = currentWords();
+  index = (index - 1 + words.length) % words.length;
   renderLearn();
 };
 
