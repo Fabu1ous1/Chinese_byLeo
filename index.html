@@ -164,6 +164,62 @@
     margin-top: 24px; padding-top: 20px; border-top: 1px solid #4A4A52;
   }
   .g-practice-q { font-size: 14px; margin-bottom: 12px; font-weight: 500; }
+
+  body { padding-bottom: 78px; }
+
+  .home-hero { display: flex; flex-direction: column; align-items: center; margin: 12px 0 28px; }
+  .home-progress-ring { position: relative; width: 132px; height: 132px; }
+  .home-progress-ring circle#homeRingFg { transition: stroke-dashoffset 0.6s ease; }
+  .home-progress-center {
+    position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  }
+  .home-progress-center b { font-family: 'Noto Serif SC', serif; font-size: 30px; color: #E8E1CF; line-height: 1; }
+  .home-progress-center span { font-size: 12px; opacity: 0.5; margin-top: 2px; }
+  .home-progress-label { font-size: 12px; opacity: 0.55; margin-top: 12px; letter-spacing: 0.05em; }
+
+  .home-levels { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+  .home-level-card {
+    display: flex; align-items: center; gap: 14px; padding: 14px 16px; border-radius: 12px;
+    background: #232328; border: 1px solid #33333a; text-align: left; font-family: 'Inter', sans-serif;
+  }
+  .home-level-badge {
+    width: 44px; height: 44px; border-radius: 10px; display: flex; align-items: center; justify-content: center;
+    font-family: 'Noto Serif SC', serif; font-weight: 700; font-size: 15px; flex-shrink: 0;
+  }
+  .home-level-info { flex: 1; min-width: 0; }
+  .home-level-title { font-size: 14px; font-weight: 600; color: #E8E1CF; margin-bottom: 4px; }
+  .home-level-bar-track { height: 5px; border-radius: 3px; background: #33333a; overflow: hidden; }
+  .home-level-bar-fill { height: 100%; border-radius: 3px; transition: width 0.5s ease; }
+  .home-level-count { font-size: 11px; opacity: 0.5; margin-left: 10px; white-space: nowrap; font-family: 'Inter', sans-serif; }
+
+  .home-continue {
+    width: 100%; display: flex; flex-direction: column; align-items: flex-start; gap: 3px;
+    padding: 16px 18px; border-radius: 12px; background: #A6332B; border: none; margin-bottom: 16px;
+    font-family: 'Inter', sans-serif;
+  }
+  .home-continue-label { color: #E8E1CF; font-size: 15px; font-weight: 600; }
+  .home-continue-sub { color: #E8CFC8; font-size: 12px; opacity: 0.85; }
+
+  .home-quicklinks { display: flex; gap: 10px; }
+  .home-quick-card {
+    flex: 1; display: flex; flex-direction: column; align-items: center; gap: 6px;
+    padding: 16px 10px; border-radius: 12px; background: #232328; border: 1px solid #33333a;
+    color: #E8E1CF; font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 500;
+  }
+  .home-quick-icon {
+    font-family: 'Noto Serif SC', serif; font-size: 20px; color: #B8933E;
+  }
+
+  .bottom-tabs {
+    position: fixed; bottom: 0; left: 0; right: 0; z-index: 30;
+    display: flex; background: #1B1B20; border-top: 1px solid #2c2c33;
+    padding: 8px 6px calc(8px + env(safe-area-inset-bottom, 0px));
+  }
+  .bottom-tab {
+    flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px;
+    background: none; border: none; color: #6b6b74; padding: 6px 2px; font-family: 'Inter', sans-serif; font-size: 10.5px;
+  }
+  .bottom-tab.active { color: #B8933E; }
 </style>
 </head>
 <body>
@@ -176,82 +232,132 @@
     <div class="seal"><b id="sealCount">0</b><span id="sealTotal">/ 80</span></div>
   </header>
 
-  <nav id="wordLevelNav" style="display:flex; gap:8px; margin-bottom:14px;"></nav>
-
-  <div id="lessonSelectWrap" class="lesson-select-wrap">
-    <button id="lessonSelectBtn" class="lesson-select-btn">
-      <span id="lessonSelectLabel">1. Приветствия</span>
-      <span class="lesson-select-count" id="lessonSelectCount">8 слов</span>
-      <span class="lesson-select-arrow">▾</span>
-    </button>
-    <div id="lessonDropdown" class="lesson-dropdown" style="display:none;"></div>
-  </div>
-
-  <div class="modes">
-    <button id="modeLearnBtn" class="active">Учить</button>
-    <button id="modeQuizBtn">Тест</button>
-    <button id="modeGrammarBtn">Грамматика</button>
-  </div>
-
-  <div id="learnView">
-    <div class="flip-card" id="flipCard">
-      <div class="flip-inner" id="flipInner">
-        <div class="flip-face flip-front">
-          <span class="char hanzi" id="fCharFront"></span>
-          <button class="sound-btn" id="soundBtnFront" aria-label="Произнести">🔊</button>
-          <div class="tone-row"><svg id="toneSvg" width="22" height="22" viewBox="0 0 22 22" fill="none"></svg><span id="toneLabel"></span></div>
-          <p class="hint">нажми, чтобы перевернуть</p>
+  <div id="homeView">
+    <div class="home-hero">
+      <div class="home-progress-ring">
+        <svg width="132" height="132" viewBox="0 0 132 132">
+          <circle cx="66" cy="66" r="56" fill="none" stroke="#2c2c33" stroke-width="11"/>
+          <circle id="homeRingFg" cx="66" cy="66" r="56" fill="none" stroke="#A6332B" stroke-width="11"
+            stroke-linecap="round" stroke-dasharray="351.9" stroke-dashoffset="351.9" transform="rotate(-90 66 66)"/>
+        </svg>
+        <div class="home-progress-center">
+          <b id="homeProgressCount">0</b>
+          <span id="homeProgressTotal">/ 1202</span>
         </div>
-        <div class="flip-face flip-back">
-          <span class="pinyin display" id="fPinyin"></span>
-          <span class="ru" id="fRu"></span>
-          <div class="example">
-            <span class="ex-hanzi hanzi" id="fExHanzi"></span>
-            <span class="ex-pinyin" id="fExPinyin"></span>
-            <span class="ex-ru" id="fExRu"></span>
+      </div>
+      <p class="home-progress-label">слов выучено всего</p>
+    </div>
+
+    <div class="home-levels" id="homeLevels"></div>
+
+    <button class="home-continue" id="homeContinueBtn">
+      <span class="home-continue-label">Продолжить обучение →</span>
+      <span class="home-continue-sub" id="homeContinueSub">HSK1 · Основы 1</span>
+    </button>
+
+    <div class="home-quicklinks">
+      <button class="home-quick-card" id="homeQuizCard">
+        <span class="home-quick-icon">✓</span>
+        <span>Тест</span>
+      </button>
+      <button class="home-quick-card" id="homeGrammarCard">
+        <span class="home-quick-icon">文</span>
+        <span>Грамматика</span>
+      </button>
+    </div>
+  </div>
+
+  <div id="wordsWrap" style="display:none;">
+    <nav id="wordLevelNav" style="display:flex; gap:8px; margin-bottom:14px;"></nav>
+
+    <div id="lessonSelectWrap" class="lesson-select-wrap">
+      <button id="lessonSelectBtn" class="lesson-select-btn">
+        <span id="lessonSelectLabel">1. Приветствия</span>
+        <span class="lesson-select-count" id="lessonSelectCount">8 слов</span>
+        <span class="lesson-select-arrow">▾</span>
+      </button>
+      <div id="lessonDropdown" class="lesson-dropdown" style="display:none;"></div>
+    </div>
+
+    <div id="learnView">
+      <div class="flip-card" id="flipCard">
+        <div class="flip-inner" id="flipInner">
+          <div class="flip-face flip-front">
+            <span class="char hanzi" id="fCharFront"></span>
+            <button class="sound-btn" id="soundBtnFront" aria-label="Произнести">🔊</button>
+            <div class="tone-row"><svg id="toneSvg" width="22" height="22" viewBox="0 0 22 22" fill="none"></svg><span id="toneLabel"></span></div>
+            <p class="hint">нажми, чтобы перевернуть</p>
+          </div>
+          <div class="flip-face flip-back">
+            <span class="pinyin display" id="fPinyin"></span>
+            <span class="ru" id="fRu"></span>
+            <div class="example">
+              <span class="ex-hanzi hanzi" id="fExHanzi"></span>
+              <span class="ex-pinyin" id="fExPinyin"></span>
+              <span class="ex-ru" id="fExRu"></span>
+            </div>
           </div>
         </div>
       </div>
+      <div class="status-row">
+        <button class="status-btn" id="learningBtn">Ещё учу</button>
+        <button class="status-btn" id="learnedBtn">Выучено</button>
+      </div>
+      <div class="row">
+        <button class="btn-outline" id="prevBtn">← Назад</button>
+        <button class="btn-solid" id="nextBtn">Далее →</button>
+      </div>
+      <p class="counter" id="counter"></p>
     </div>
-    <div class="status-row">
-      <button class="status-btn" id="learningBtn">Ещё учу</button>
-      <button class="status-btn" id="learnedBtn">Выучено</button>
-    </div>
-    <div class="row">
-      <button class="btn-outline" id="prevBtn">← Назад</button>
-      <button class="btn-solid" id="nextBtn">Далее →</button>
-    </div>
-    <p class="counter" id="counter"></p>
-  </div>
 
-  <div id="quizView" style="display:none;">
-    <div class="quiz-card">
-      <span class="char" id="qChar"></span>
-      <button class="sound-btn sound-btn-quiz" id="soundBtnQuiz" aria-label="Произнести">🔊</button>
-      <span class="pinyin display" id="qPinyin"></span>
+    <div id="quizView" style="display:none;">
+      <div class="quiz-card">
+        <span class="char" id="qChar"></span>
+        <button class="sound-btn sound-btn-quiz" id="soundBtnQuiz" aria-label="Произнести">🔊</button>
+        <span class="pinyin display" id="qPinyin"></span>
+      </div>
+      <p class="quiz-label">Что это значит?</p>
+      <div class="options" id="qOptions"></div>
+      <button class="next-btn" id="qNextBtn" style="display:none;">Следующий вопрос →</button>
     </div>
-    <p class="quiz-label">Что это значит?</p>
-    <div class="options" id="qOptions"></div>
-    <button class="next-btn" id="qNextBtn" style="display:none;">Следующий вопрос →</button>
-  </div>
 
-  <div id="grammarView" style="display:none;">
-    <nav id="gLevelNav" style="margin-bottom:16px;"></nav>
-    <div id="gList" class="g-list"></div>
-    <div id="gDetail" style="display:none;">
-      <button class="g-back" id="gBackBtn">← Все темы</button>
-      <h2 class="g-detail-title display" id="gTitle"></h2>
-      <p class="g-explain" id="gExplain"></p>
-      <div class="g-formula" id="gFormula"></div>
-      <p class="g-ex-label">Примеры</p>
-      <div id="gExamples"></div>
-      <div class="g-practice">
-        <p class="g-practice-q" id="gPracticeQ"></p>
-        <div class="options" id="gPracticeOpts"></div>
+    <div id="grammarView" style="display:none;">
+      <nav id="gLevelNav" style="margin-bottom:16px;"></nav>
+      <div id="gList" class="g-list"></div>
+      <div id="gDetail" style="display:none;">
+        <button class="g-back" id="gBackBtn">← Все темы</button>
+        <h2 class="g-detail-title display" id="gTitle"></h2>
+        <p class="g-explain" id="gExplain"></p>
+        <div class="g-formula" id="gFormula"></div>
+        <p class="g-ex-label">Примеры</p>
+        <div id="gExamples"></div>
+        <div class="g-practice">
+          <p class="g-practice-q" id="gPracticeQ"></p>
+          <div class="options" id="gPracticeOpts"></div>
+        </div>
       </div>
     </div>
   </div>
 </div>
+
+<nav class="bottom-tabs" id="bottomTabs">
+  <button class="bottom-tab active" id="tabHome">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M3 11.5L12 4l9 7.5M5 10v9a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1v-9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <span>Главная</span>
+  </button>
+  <button class="bottom-tab" id="tabLearn">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="4" y="5" width="13" height="16" rx="2" transform="rotate(-6 4 5)" stroke="currentColor" stroke-width="1.8"/><rect x="7" y="3" width="13" height="16" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>
+    <span>Учить</span>
+  </button>
+  <button class="bottom-tab" id="tabQuiz">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"/><path d="M8 12.5l2.5 2.5L16 9.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <span>Тест</span>
+  </button>
+  <button class="bottom-tab" id="tabGrammar">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M4 5.5C4 4.7 4.7 4 5.5 4H12v16H5.5A1.5 1.5 0 0 1 4 18.5v-13z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M20 5.5c0-.8-.7-1.5-1.5-1.5H12v16h6.5a1.5 1.5 0 0 0 1.5-1.5v-13z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+    <span>Грамматика</span>
+  </button>
+</nav>
 
 <script>
 try {
@@ -2351,42 +2457,77 @@ document.getElementById("qNextBtn").onclick = () => {
   renderQuiz();
 };
 
-document.getElementById("modeLearnBtn").onclick = () => {
-  mode = "learn";
-  setActiveModeBtn("modeLearnBtn");
-  document.getElementById("learnView").style.display = "block";
-  document.getElementById("quizView").style.display = "none";
-  document.getElementById("grammarView").style.display = "none";
-  document.getElementById("lessonSelectWrap").style.display = "block";
-  index = 0;
-  renderLearn();
-};
+function showScreen(screen) {
+  document.getElementById("homeView").style.display = screen === "home" ? "block" : "none";
+  document.getElementById("wordsWrap").style.display = screen === "home" ? "none" : "block";
+  document.getElementById("learnView").style.display = screen === "learn" ? "block" : "none";
+  document.getElementById("quizView").style.display = screen === "quiz" ? "block" : "none";
+  document.getElementById("grammarView").style.display = screen === "grammar" ? "block" : "none";
+  document.getElementById("lessonSelectWrap").style.display = (screen === "learn" || screen === "quiz") ? "block" : "none";
+  document.getElementById("wordLevelNav").style.display = (screen === "learn" || screen === "quiz") ? "flex" : "none";
 
-document.getElementById("modeQuizBtn").onclick = () => {
-  mode = "quiz";
-  setActiveModeBtn("modeQuizBtn");
-  document.getElementById("learnView").style.display = "none";
-  document.getElementById("quizView").style.display = "block";
-  document.getElementById("grammarView").style.display = "none";
-  document.getElementById("lessonSelectWrap").style.display = "block";
-  index = 0;
-  renderQuiz();
-};
+  const tabMap = { home: "tabHome", learn: "tabLearn", quiz: "tabQuiz", grammar: "tabGrammar" };
+  ["tabHome", "tabLearn", "tabQuiz", "tabGrammar"].forEach(id => document.getElementById(id).classList.remove("active"));
+  document.getElementById(tabMap[screen]).classList.add("active");
 
-document.getElementById("modeGrammarBtn").onclick = () => {
-  mode = "grammar";
-  setActiveModeBtn("modeGrammarBtn");
-  document.getElementById("learnView").style.display = "none";
-  document.getElementById("quizView").style.display = "none";
-  document.getElementById("grammarView").style.display = "block";
-  document.getElementById("lessonSelectWrap").style.display = "none";
-  showGrammarList();
-};
-
-function setActiveModeBtn(id) {
-  ["modeLearnBtn", "modeQuizBtn", "modeGrammarBtn"].forEach(b => document.getElementById(b).classList.remove("active"));
-  document.getElementById(id).classList.add("active");
+  if (screen === "learn") { mode = "learn"; index = 0; renderLearn(); }
+  else if (screen === "quiz") { mode = "quiz"; index = 0; renderQuiz(); }
+  else if (screen === "grammar") { mode = "grammar"; showGrammarList(); }
+  else if (screen === "home") { renderHome(); }
 }
+
+document.getElementById("tabHome").onclick = () => showScreen("home");
+document.getElementById("tabLearn").onclick = () => showScreen("learn");
+document.getElementById("tabQuiz").onclick = () => showScreen("quiz");
+document.getElementById("tabGrammar").onclick = () => showScreen("grammar");
+document.getElementById("homeQuizCard").onclick = () => showScreen("quiz");
+document.getElementById("homeGrammarCard").onclick = () => showScreen("grammar");
+document.getElementById("homeContinueBtn").onclick = () => showScreen("learn");
+
+const LEVEL_COLORS = {
+  hsk1: "#A6332B", hsk2: "#B8933E", hsk3: "#4F6F62", hsk4: "#6B5B95",
+};
+
+function renderHome() {
+  const totalLearned = Object.keys(learned).filter(k => learned[k]).length;
+  document.getElementById("homeProgressCount").textContent = totalLearned;
+  document.getElementById("homeProgressTotal").textContent = "/ " + ALL_WORDS_TOTAL.length;
+  const circumference = 2 * Math.PI * 56;
+  const pct = Math.min(1, totalLearned / ALL_WORDS_TOTAL.length);
+  document.getElementById("homeRingFg").style.strokeDashoffset = String(circumference * (1 - pct));
+
+  const levelsDiv = document.getElementById("homeLevels");
+  levelsDiv.innerHTML = "";
+  WORD_LEVELS.forEach(lvl => {
+    const words = ALL_WORDS_BY_LEVEL[lvl.id];
+    const done = words.filter(w => learned[w.hanzi]).length;
+    const color = LEVEL_COLORS[lvl.id];
+    const card = document.createElement("button");
+    card.className = "home-level-card";
+    card.innerHTML =
+      '<div class="home-level-badge" style="background:' + color + '22; color:' + color + ';">' + lvl.label + '</div>' +
+      '<div class="home-level-info">' +
+        '<div class="home-level-title">' + lvl.label + '</div>' +
+        '<div class="home-level-bar-track"><div class="home-level-bar-fill" style="width:' + Math.round((done / words.length) * 100) + '%; background:' + color + ';"></div></div>' +
+      '</div>' +
+      '<div class="home-level-count">' + done + '/' + words.length + '</div>';
+    card.onclick = () => {
+      wordLevel = lvl.id;
+      lessonId = currentLevelTopics()[0].id;
+      showScreen("learn");
+      renderLevelNav();
+      renderNav();
+    };
+    levelsDiv.appendChild(card);
+  });
+
+  const curLevel = WORD_LEVELS.find(l => l.id === wordLevel);
+  const curTopic = curLevel.topics.find(t => t.id === lessonId) || curLevel.topics[0];
+  document.getElementById("homeContinueSub").textContent = curLevel.label + " · " + curTopic.title;
+}
+
+function setActiveModeBtn(id) {}
+
 
 let grammarLevel = "basic";
 
@@ -2477,7 +2618,7 @@ document.getElementById("gBackBtn").onclick = showGrammarList;
 
 renderLevelNav();
 renderNav();
-renderLearn();
+showScreen("home");
 </script>
 </body>
 </html>
