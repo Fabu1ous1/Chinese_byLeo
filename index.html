@@ -11,11 +11,24 @@
   * { box-sizing: border-box; }
   body {
     margin: 0;
-    background: #1B1B20;
+    background:
+      radial-gradient(ellipse 600px 400px at 15% -5%, rgba(166,51,43,0.10), transparent 60%),
+      radial-gradient(ellipse 500px 350px at 100% 15%, rgba(184,147,62,0.08), transparent 55%),
+      #1B1B20;
+    background-attachment: fixed;
     color: #E8E1CF;
     font-family: 'Inter', sans-serif;
     -webkit-tap-highlight-color: transparent;
   }
+  button { transition: transform 0.12s ease, opacity 0.12s ease; }
+  button:active { transform: scale(0.95); opacity: 0.85; }
+  @keyframes fadeSlideIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+  .screen-enter { animation: fadeSlideIn 0.32s cubic-bezier(.2,.8,.2,1) both; }
+  @keyframes popIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+  @keyframes glowPulse { 0%,100% { box-shadow: 0 0 0 0 rgba(166,51,43,0.35); } 50% { box-shadow: 0 0 0 8px rgba(166,51,43,0); } }
+  @keyframes celebrate { 0% { transform: scale(1); } 30% { transform: scale(1.06); } 60% { transform: scale(0.98); } 100% { transform: scale(1); } }
+  @keyframes ringDraw { from { stroke-dashoffset: 351.9; } }
+  @keyframes floatSlow { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
   .wrap { max-width: 420px; margin: 0 auto; padding: 32px 20px 64px; }
   .hanzi { font-family: 'Noto Serif SC', serif; }
   .display { font-family: 'Spectral', serif; font-style: italic; }
@@ -75,7 +88,12 @@
   .modes button.active { background: #B8933E; border-color: #B8933E; color: #1B1B20; font-weight: 600; }
 
   .flip-card { perspective: 1200px; margin-bottom: 20px; height: 310px; cursor: pointer; }
-  .flip-inner { position: relative; width: 100%; height: 100%; transition: transform 0.5s; transform-style: preserve-3d; }
+  .flip-card:active .flip-inner { transform: scale(0.98) rotateY(var(--fy, 0deg)); }
+  .flip-inner {
+    position: relative; width: 100%; height: 100%; transform-style: preserve-3d;
+    transition: transform 0.55s cubic-bezier(.34,1.56,.64,1);
+    filter: drop-shadow(0 10px 24px rgba(0,0,0,0.35));
+  }
   .flip-inner.flipped { transform: rotateY(180deg); }
   .flip-face {
     position: absolute; inset: 0; border-radius: 10px; backface-visibility: hidden;
@@ -131,6 +149,27 @@
   .quiz-card .char { font-size: 56px; font-family: 'Noto Serif SC', serif; }
   .quiz-card .pinyin { font-size: 18px; opacity: 0.6; }
   .quiz-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.15em; opacity: 0.6; margin-bottom: 8px; }
+
+  .quiz-sub-modes { display: flex; gap: 8px; margin-bottom: 20px; }
+  .quiz-sub-btn {
+    flex: 1; padding: 9px; border-radius: 8px; font-size: 13px; font-weight: 500;
+    background: transparent; border: 1px solid #4A4A52; color: #B8B3A5; font-family: 'Inter', sans-serif;
+  }
+  .quiz-sub-btn.active { background: #4F6F62; border-color: #4F6F62; color: #E8E1CF; }
+
+  .match-grid { display: flex; gap: 10px; margin-bottom: 16px; }
+  .match-col { flex: 1; display: flex; flex-direction: column; gap: 8px; }
+  .match-item {
+    padding: 12px 10px; border-radius: 8px; border: 1px solid #4A4A52; background: transparent;
+    color: #E8E1CF; font-family: 'Inter', sans-serif; font-size: 13px; text-align: center; min-height: 52px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
+  }
+  .match-item .mi-hanzi { font-family: 'Noto Serif SC', serif; font-size: 20px; line-height: 1.1; }
+  .match-item .mi-pinyin { font-size: 11px; opacity: 0.6; }
+  .match-item.selected { border-color: #B8933E; background: rgba(184,147,62,0.15); }
+  .match-item.matched { border-color: #4F6F62; background: rgba(79,111,98,0.2); color: #8fada3; }
+  .match-item.wrong { border-color: #A6332B; background: rgba(166,51,43,0.2); }
+  .match-item.disabled { pointer-events: none; }
   .options { display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px; }
   .opt {
     text-align: left; padding: 12px 16px; border-radius: 8px; font-size: 14px;
@@ -167,9 +206,12 @@
 
   body { padding-bottom: 78px; }
 
-  .home-hero { display: flex; flex-direction: column; align-items: center; margin: 12px 0 28px; }
-  .home-progress-ring { position: relative; width: 132px; height: 132px; }
-  .home-progress-ring circle#homeRingFg { transition: stroke-dashoffset 0.6s ease; }
+  .home-hero { display: flex; flex-direction: column; align-items: center; margin: 12px 0 28px; animation: floatSlow 5s ease-in-out infinite; }
+  .home-progress-ring {
+    position: relative; width: 132px; height: 132px; border-radius: 50%;
+    filter: drop-shadow(0 0 18px rgba(166,51,43,0.25));
+  }
+  .home-progress-ring circle#homeRingFg { transition: stroke-dashoffset 1.1s cubic-bezier(.2,.8,.2,1); animation: ringDraw 1.1s cubic-bezier(.2,.8,.2,1); }
   .home-progress-center {
     position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center;
   }
@@ -180,11 +222,15 @@
   .home-levels { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
   .home-level-card {
     display: flex; align-items: center; gap: 14px; padding: 14px 16px; border-radius: 12px;
-    background: #232328; border: 1px solid #33333a; text-align: left; font-family: 'Inter', sans-serif;
+    background: linear-gradient(135deg, #232328, #1f1f24);
+    border: 1px solid #33333a; text-align: left; font-family: 'Inter', sans-serif;
+    transition: border-color 0.2s ease, transform 0.15s ease;
   }
+  .home-level-card:active { border-color: #4A4A52; }
   .home-level-badge {
     width: 44px; height: 44px; border-radius: 10px; display: flex; align-items: center; justify-content: center;
     font-family: 'Noto Serif SC', serif; font-weight: 700; font-size: 15px; flex-shrink: 0;
+    box-shadow: 0 0 0 1px currentColor inset;
   }
   .home-level-info { flex: 1; min-width: 0; }
   .home-level-title { font-size: 14px; font-weight: 600; color: #E8E1CF; margin-bottom: 4px; }
@@ -194,8 +240,11 @@
 
   .home-continue {
     width: 100%; display: flex; flex-direction: column; align-items: flex-start; gap: 3px;
-    padding: 16px 18px; border-radius: 12px; background: #A6332B; border: none; margin-bottom: 16px;
+    padding: 16px 18px; border-radius: 12px;
+    background: linear-gradient(135deg, #A6332B, #8a2a23);
+    border: none; margin-bottom: 16px;
     font-family: 'Inter', sans-serif;
+    animation: glowPulse 2.6s ease-in-out infinite;
   }
   .home-continue-label { color: #E8E1CF; font-size: 15px; font-weight: 600; }
   .home-continue-sub { color: #E8CFC8; font-size: 12px; opacity: 0.85; }
@@ -218,8 +267,11 @@
   .bottom-tab {
     flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px;
     background: none; border: none; color: #6b6b74; padding: 6px 2px; font-family: 'Inter', sans-serif; font-size: 10.5px;
+    transition: color 0.2s ease;
   }
+  .bottom-tab svg { transition: transform 0.25s cubic-bezier(.34,1.56,.64,1); }
   .bottom-tab.active { color: #B8933E; }
+  .bottom-tab.active svg { transform: translateY(-2px) scale(1.08); }
 </style>
 </head>
 <body>
@@ -311,14 +363,30 @@
     </div>
 
     <div id="quizView" style="display:none;">
-      <div class="quiz-card">
-        <span class="char" id="qChar"></span>
-        <button class="sound-btn sound-btn-quiz" id="soundBtnQuiz" aria-label="Произнести">🔊</button>
-        <span class="pinyin display" id="qPinyin"></span>
+      <div class="quiz-sub-modes">
+        <button class="quiz-sub-btn active" id="quizSubChoiceBtn">Варианты</button>
+        <button class="quiz-sub-btn" id="quizSubMatchBtn">Пары</button>
       </div>
-      <p class="quiz-label">Что это значит?</p>
-      <div class="options" id="qOptions"></div>
-      <button class="next-btn" id="qNextBtn" style="display:none;">Следующий вопрос →</button>
+
+      <div id="quizChoiceView">
+        <div class="quiz-card">
+          <span class="char" id="qChar"></span>
+          <button class="sound-btn sound-btn-quiz" id="soundBtnQuiz" aria-label="Произнести">🔊</button>
+          <span class="pinyin display" id="qPinyin"></span>
+        </div>
+        <p class="quiz-label">Что это значит?</p>
+        <div class="options" id="qOptions"></div>
+        <button class="next-btn" id="qNextBtn" style="display:none;">Следующий вопрос →</button>
+      </div>
+
+      <div id="quizMatchView" style="display:none;">
+        <p class="quiz-label">Соедини иероглиф с переводом</p>
+        <div class="match-grid">
+          <div class="match-col" id="matchColLeft"></div>
+          <div class="match-col" id="matchColRight"></div>
+        </div>
+        <button class="next-btn" id="matchNextBtn" style="display:none;">Ещё раунд →</button>
+      </div>
     </div>
 
     <div id="grammarView" style="display:none;">
@@ -2277,7 +2345,7 @@ function renderLevelNav() {
     b.className = "word-level-btn" + (lvl.id === wordLevel ? " active" : "");
     b.onclick = () => {
       wordLevel = lvl.id; lessonId = currentLevelTopics()[0].id; index = 0; flipped = false;
-      renderLevelNav(); renderNav(); renderLearn(); renderQuiz(true);
+      renderLevelNav(); renderNav(); renderLearn(); if (quizSubMode === "match") startMatchRound(); else renderQuiz(true);
     };
     nav.appendChild(b);
   });
@@ -2299,7 +2367,7 @@ function renderNav() {
     b.onclick = () => {
       lessonId = l.id; index = 0; flipped = false;
       dropdown.style.display = "none";
-      renderNav(); renderLearn(); renderQuiz(true);
+      renderNav(); renderLearn(); if (quizSubMode === "match") startMatchRound(); else renderQuiz(true);
     };
     dropdown.appendChild(b);
   });
@@ -2388,6 +2456,133 @@ function renderQuiz(reset) {
   updateSeal();
 }
 
+let quizSubMode = "choice";
+let matchLeftSel = null;
+let matchRightSel = null;
+let matchPairs = [];
+let matchedCount = 0;
+
+function shuffleArr(arr) {
+  const a = arr.slice();
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function startMatchRound() {
+  const words = currentWords();
+  const count = Math.min(6, words.length);
+  matchPairs = shuffleArr(words).slice(0, count);
+  matchLeftSel = null;
+  matchRightSel = null;
+  matchedCount = 0;
+
+  const leftOrder = shuffleArr(matchPairs);
+  const rightOrder = shuffleArr(matchPairs);
+
+  const leftCol = document.getElementById("matchColLeft");
+  const rightCol = document.getElementById("matchColRight");
+  leftCol.innerHTML = "";
+  rightCol.innerHTML = "";
+
+  leftOrder.forEach(w => {
+    const btn = document.createElement("button");
+    btn.className = "match-item";
+    btn.dataset.hanzi = w.hanzi;
+    btn.innerHTML = '<span class="mi-hanzi">' + w.hanzi + '</span><span class="mi-pinyin">' + w.pinyin + '</span>';
+    btn.onclick = () => onMatchPick("left", w.hanzi, btn);
+    leftCol.appendChild(btn);
+  });
+  rightOrder.forEach(w => {
+    const btn = document.createElement("button");
+    btn.className = "match-item";
+    btn.dataset.hanzi = w.hanzi;
+    btn.textContent = w.ru;
+    btn.onclick = () => onMatchPick("right", w.hanzi, btn);
+    rightCol.appendChild(btn);
+  });
+
+  document.getElementById("matchNextBtn").style.display = "none";
+}
+
+function onMatchPick(side, hanzi, btn) {
+  if (btn.classList.contains("matched") || btn.classList.contains("disabled")) return;
+  if (side === "left") {
+    if (matchLeftSel) matchLeftSel.btn.classList.remove("selected");
+    matchLeftSel = { hanzi, btn };
+    btn.classList.add("selected");
+  } else {
+    if (matchRightSel) matchRightSel.btn.classList.remove("selected");
+    matchRightSel = { hanzi, btn };
+    btn.classList.add("selected");
+  }
+
+  if (matchLeftSel && matchRightSel) {
+    const isMatch = matchLeftSel.hanzi === matchRightSel.hanzi;
+    const l = matchLeftSel.btn, r = matchRightSel.btn;
+    if (isMatch) {
+      l.classList.remove("selected"); r.classList.remove("selected");
+      l.classList.add("matched"); r.classList.add("matched");
+      learned[matchLeftSel.hanzi] = true;
+      saveProgress();
+      matchedCount++;
+      try {
+        window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.HapticFeedback &&
+        window.Telegram.WebApp.HapticFeedback.notificationOccurred("success");
+      } catch (e) {}
+      updateSeal();
+      if (matchedCount === matchPairs.length) {
+        const nextBtn = document.getElementById("matchNextBtn");
+        nextBtn.style.display = "block";
+        nextBtn.style.animation = "celebrate 0.5s ease";
+        document.querySelectorAll("#quizMatchView .match-item").forEach((el, i) => {
+          el.style.animation = "celebrate 0.4s ease";
+          el.style.animationDelay = (i * 0.03) + "s";
+        });
+        try {
+          window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.HapticFeedback &&
+          window.Telegram.WebApp.HapticFeedback.notificationOccurred("success");
+        } catch (e) {}
+      }
+    } else {
+      l.classList.add("wrong"); r.classList.add("wrong");
+      l.classList.add("disabled"); r.classList.add("disabled");
+      try {
+        window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.HapticFeedback &&
+        window.Telegram.WebApp.HapticFeedback.notificationOccurred("error");
+      } catch (e) {}
+      setTimeout(() => {
+        l.classList.remove("wrong", "disabled", "selected");
+        r.classList.remove("wrong", "disabled", "selected");
+      }, 600);
+    }
+    matchLeftSel = null;
+    matchRightSel = null;
+  }
+}
+
+document.getElementById("quizSubChoiceBtn").onclick = () => {
+  quizSubMode = "choice";
+  document.getElementById("quizSubChoiceBtn").classList.add("active");
+  document.getElementById("quizSubMatchBtn").classList.remove("active");
+  document.getElementById("quizChoiceView").style.display = "block";
+  document.getElementById("quizMatchView").style.display = "none";
+  renderQuiz();
+};
+
+document.getElementById("quizSubMatchBtn").onclick = () => {
+  quizSubMode = "match";
+  document.getElementById("quizSubMatchBtn").classList.add("active");
+  document.getElementById("quizSubChoiceBtn").classList.remove("active");
+  document.getElementById("quizChoiceView").style.display = "none";
+  document.getElementById("quizMatchView").style.display = "block";
+  startMatchRound();
+};
+
+document.getElementById("matchNextBtn").onclick = () => startMatchRound();
+
 function speak(text) {
   try {
     if (!("speechSynthesis" in window)) return;
@@ -2471,9 +2666,14 @@ function showScreen(screen) {
   document.getElementById(tabMap[screen]).classList.add("active");
 
   if (screen === "learn") { mode = "learn"; index = 0; renderLearn(); }
-  else if (screen === "quiz") { mode = "quiz"; index = 0; renderQuiz(); }
+  else if (screen === "quiz") { mode = "quiz"; index = 0; if (quizSubMode === "match") startMatchRound(); else renderQuiz(); }
   else if (screen === "grammar") { mode = "grammar"; showGrammarList(); }
   else if (screen === "home") { renderHome(); }
+
+  const activeEl = document.getElementById(screen === "home" ? "homeView" : "wordsWrap");
+  activeEl.classList.remove("screen-enter");
+  void activeEl.offsetWidth;
+  activeEl.classList.add("screen-enter");
 }
 
 document.getElementById("tabHome").onclick = () => showScreen("home");
@@ -2498,12 +2698,14 @@ function renderHome() {
 
   const levelsDiv = document.getElementById("homeLevels");
   levelsDiv.innerHTML = "";
-  WORD_LEVELS.forEach(lvl => {
+  WORD_LEVELS.forEach((lvl, i) => {
     const words = ALL_WORDS_BY_LEVEL[lvl.id];
     const done = words.filter(w => learned[w.hanzi]).length;
     const color = LEVEL_COLORS[lvl.id];
     const card = document.createElement("button");
     card.className = "home-level-card";
+    card.style.animation = "fadeSlideIn 0.4s cubic-bezier(.2,.8,.2,1) both";
+    card.style.animationDelay = (i * 0.07) + "s";
     card.innerHTML =
       '<div class="home-level-badge" style="background:' + color + '22; color:' + color + ';">' + lvl.label + '</div>' +
       '<div class="home-level-info">' +
